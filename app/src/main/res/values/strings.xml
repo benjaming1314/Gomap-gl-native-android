@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Gomap-gl-native-android</string>
+    <string name="category">category</string>
+
+    <string name="description_press_for_marker">Add marker to map on long press</string>
+    <string name="activity_press_for_marker">Press Map For Marker</string>
+    <string name="category_annotation">Annotation</string>
+
+    <string name="description_simple_map">Shows a simple map</string>
+    <string name="category_basic">_Basic</string>
+    <string name="activity_simple_map">Simple Map</string>
+
+</resources>

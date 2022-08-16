@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gomap.demo">
+
+    <application
+        android:allowBackup="true"
+        android:name=".GomapApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Gomapglnativeandroid">
+        <activity
+            android:name=".FeatureOverviewActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.annotation.PressForMarkerActivity"
+            android:description="@string/description_press_for_marker"
+            android:exported="true"
+            android:label="@string/activity_press_for_marker">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+        <activity
+            android:name=".activity.map.SimpleMapActivity"
+            android:description="@string/description_simple_map"
+            android:exported="true"
+            android:label="@string/activity_simple_map"
+            android:launchMode="singleInstance">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_basic" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.FeatureOverviewActivity" />
+        </activity>
+
+        <!-- Configuration Settings -->
+        <meta-data
+            android:name="com.mapbox.TestEventsServer"
+            android:value="api-events-staging.tilestream.net" />
+        <meta-data
+            android:name="com.mapbox.TestEventsAccessToken"
+            android:value="pk.eyJ1IjoiYmxzdGFnaW5nIiwiYSI6ImNpdDF3OHpoaTAwMDcyeXA5Y3Z0Nmk2dzEifQ.0IfB7v5Qbm2MGVYt8Kb8fg" />
+
+        <!-- Comment out this setting to switch to external storage (and disable internal) in your app -->
+        <!-- Alternatively you can rely on FileSource#setResourceCachePath API instead -->
+        <!-- <meta-data -->
+        <!-- android:name="com.mapbox.SetStorageExternal" -->
+        <!-- android:value="true" /> -->
+
+        <!-- Set value to true to have tile loading measurements on -->
+        <meta-data
+            android:name="com.mapbox.MeasureTileDownloadOn"
+            android:value="false" />
+    </application>
+
+</manifest>

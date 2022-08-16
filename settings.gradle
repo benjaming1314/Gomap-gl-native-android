@@ -1,0 +1,2 @@
+rootProject.name = "Gomap-gl-native-android"
+include ':app'
