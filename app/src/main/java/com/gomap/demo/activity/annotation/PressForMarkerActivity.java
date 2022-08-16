@@ -82,17 +82,12 @@ public class PressForMarkerActivity extends AppCompatActivity implements Locatio
       permissionsManager.requestLocationPermissions(this);
     }
 
-    findViewById(R.id.route).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        requestDirectionRoute();
-      }
-    });
 
-    findViewById(R.id.clear_route).setOnClickListener(new View.OnClickListener() {
+    findViewById(R.id.clear_marker).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
 
+        mapboxMap.clearDrawLine();
 
       }
     });
@@ -133,29 +128,6 @@ public class PressForMarkerActivity extends AppCompatActivity implements Locatio
       });
 
     });
-  }
-
-  private void requestDirectionRoute(){
-    List<Point> pointList = new ArrayList<>();
-
-    for (MarkerOptions marker:
-    markerList) {
-      pointList.add(Point.fromLngLat(marker.getPosition().getLongitude(),marker.getPosition().getLatitude()));
-    }
-
-    DirectionService.getInstance().requestRouteDirection(pointList, new DirectionServiceCallBack() {
-      @Override
-      public void onCallBack(DirectionsResponse directionsResponse) {
-        drawLine(directionsResponse);
-      }
-    });
-
-  }
-//
-  private void drawLine(DirectionsResponse directionsResponse){
-
-    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0).getLegs().get(0));
-
   }
 
   private void addMarker(LatLng point) {

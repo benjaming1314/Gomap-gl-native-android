@@ -6,6 +6,9 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.util.DefaultStyle;
@@ -14,6 +17,8 @@ import com.mapbox.mapboxsdk.util.DefaultStyle;
  * Test activity showcasing a simple MapView without any MapboxMap interaction.
  */
 public class SimpleMapActivity extends AppCompatActivity {
+
+  private final LatLng CENTER = new LatLng(24.4628,54.3697);
 
   private MapView mapView;
 
@@ -28,6 +33,14 @@ public class SimpleMapActivity extends AppCompatActivity {
       if (styles != null && styles.length > 0) {
         String styleUrl = styles[0].getUrl();
         mapboxMap.setStyle(new Style.Builder().fromUri(styleUrl));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(CENTER)
+                .zoom(10)
+                .tilt(30)
+                .tilt(0)
+                .build();
+        mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
       }
     });
   }

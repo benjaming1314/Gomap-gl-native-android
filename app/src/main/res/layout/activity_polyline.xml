@@ -2,21 +2,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:mapbox_cameraTargetLat="45.1855569"
-        app:mapbox_cameraTargetLng="5.7215506"
-        app:mapbox_cameraZoom="11"
-        app:mapbox_uiAttributionGravity="top|end"
-        app:mapbox_uiLogoGravity="top|end"
-        app:mapbox_uiLogoMarginRight="28dp"/>
-
+        android:layout_height="match_parent"
+        app:mapbox_uiAttributionTintColor="@android:color/holo_green_dark" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -26,12 +19,20 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
-
         <Button
-            android:id="@+id/clear_marker"
+            android:id="@+id/route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="clear Marker"
+            android:text="route"
+            android:background="#4c000000"
+            android:textColor="#000000"
+            />
+
+        <Button
+            android:id="@+id/clear_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="clear route"
             android:layout_marginStart="8dp"
             android:background="#4c000000"
             android:textColor="#000000"

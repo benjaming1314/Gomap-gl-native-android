@@ -4,10 +4,25 @@
 
     <string name="description_press_for_marker">Add marker to map on long press</string>
     <string name="activity_press_for_marker">Press Map For Marker</string>
-    <string name="category_annotation">Annotation</string>
-
-    <string name="description_simple_map">Shows a simple map</string>
-    <string name="category_basic">_Basic</string>
     <string name="activity_simple_map">Simple Map</string>
+
+    <string name="activity_polyline">Polyline</string>
+    <string name="activity_camera_animation_types">Animation Types</string>
+    <string name="activity_location_fragment">Location Fragment</string>
+
+    <string name="category_annotation">Annotation</string>
+    <string name="category_basic">_Basic</string>
+    <string name="category_route">Route</string>
+    <string name="category_location">Location</string>
+    <string name="category_camera">Camera</string>
+
+    <string name="button_camera_move">Move</string>
+    <string name="button_camera_ease">Ease</string>
+    <string name="button_camera_animate">Animate</string>
+
+    <string name="description_camera_animation_types">Showcase the different animation types</string>
+    <string name="description_polyline">Add a polyline to a map</string>
+    <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
+    <string name="description_simple_map">Shows a simple map</string>
 
 </resources>
