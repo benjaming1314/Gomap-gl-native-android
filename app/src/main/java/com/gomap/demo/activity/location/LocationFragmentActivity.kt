@@ -9,16 +9,16 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gomap.demo.R
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
-import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions
-import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback
-import com.mapbox.mapboxsdk.location.engine.LocationEngineResult
-import com.mapbox.mapboxsdk.location.permissions.PermissionsListener
-import com.mapbox.mapboxsdk.location.permissions.PermissionsManager
-import com.mapbox.mapboxsdk.maps.MapView
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.Style
+import com.gomap.sdk.camera.CameraUpdateFactory
+import com.gomap.sdk.geometry.LatLng
+import com.gomap.sdk.location.LocationComponentActivationOptions
+import com.gomap.sdk.location.engine.LocationEngineCallback
+import com.gomap.sdk.location.engine.LocationEngineResult
+import com.gomap.sdk.location.permissions.PermissionsListener
+import com.gomap.sdk.location.permissions.PermissionsManager
+import com.gomap.sdk.maps.MapView
+import com.gomap.sdk.maps.MapboxMap
+import com.gomap.sdk.maps.Style
 
 class LocationFragmentActivity : AppCompatActivity() {
     private lateinit var permissionsManager: PermissionsManager

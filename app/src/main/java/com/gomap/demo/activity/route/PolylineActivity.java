@@ -9,16 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.route.DirectionService;
-import com.mapbox.mapboxsdk.route.DirectionServiceCallBack;
-import com.mapbox.mapboxsdk.route.model.DirectionsResponse;
+import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.camera.CameraPosition;
+import com.gomap.sdk.camera.CameraUpdateFactory;
+import com.gomap.sdk.geometry.LatLng;
+import com.gomap.sdk.maps.MapView;
+import com.gomap.sdk.maps.MapboxMap;
+import com.gomap.sdk.maps.Style;
+import com.gomap.sdk.route.DirectionService;
+import com.gomap.sdk.route.DirectionServiceCallBack;
+import com.gomap.sdk.route.model.DirectionsResponse;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -113,8 +113,8 @@ public class PolylineActivity extends AppCompatActivity {
   }
   //
   private void drawLine(DirectionsResponse directionsResponse){
-
-    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0).getLegs().get(0));
+// TODO: 8/17/2022  
+//    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0).getLegs().get(0));
 
   }
 

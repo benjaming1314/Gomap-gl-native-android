@@ -16,21 +16,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationComponent;
-import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.engine.LocationEngineCallback;
-import com.mapbox.mapboxsdk.location.engine.LocationEngineResult;
-import com.mapbox.mapboxsdk.location.permissions.PermissionsListener;
-import com.mapbox.mapboxsdk.location.permissions.PermissionsManager;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.route.DirectionService;
-import com.mapbox.mapboxsdk.route.DirectionServiceCallBack;
-import com.mapbox.mapboxsdk.route.model.DirectionsResponse;
+import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.camera.CameraUpdateFactory;
+import com.gomap.sdk.geometry.LatLng;
+import com.gomap.sdk.location.LocationComponent;
+import com.gomap.sdk.location.LocationComponentActivationOptions;
+import com.gomap.sdk.location.engine.LocationEngineCallback;
+import com.gomap.sdk.location.engine.LocationEngineResult;
+import com.gomap.sdk.location.permissions.PermissionsListener;
+import com.gomap.sdk.location.permissions.PermissionsManager;
+import com.gomap.sdk.maps.MapView;
+import com.gomap.sdk.maps.MapboxMap;
+import com.gomap.sdk.maps.Style;
+import com.gomap.sdk.route.DirectionService;
+import com.gomap.sdk.route.DirectionServiceCallBack;
+import com.gomap.sdk.route.model.DirectionsResponse;
 
 import org.jetbrains.annotations.NotNull;
 
