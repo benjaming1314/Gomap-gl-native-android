@@ -6,12 +6,12 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.util.DefaultStyle;
+import com.gomap.sdk.camera.CameraPosition;
+import com.gomap.sdk.camera.CameraUpdateFactory;
+import com.gomap.sdk.geometry.LatLng;
+import com.gomap.sdk.maps.MapView;
+import com.gomap.sdk.maps.Style;
+import com.gomap.sdk.util.DefaultStyle;
 
 /**
  * Test activity showcasing a simple MapView without any MapboxMap interaction.

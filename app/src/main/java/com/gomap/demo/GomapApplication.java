@@ -3,9 +3,9 @@ package com.gomap.demo;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.mapbox.mapboxsdk.MapStrictMode;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.WellKnownTileServer;
+import com.gomap.sdk.MapStrictMode;
+import com.gomap.sdk.Mapbox;
+import com.gomap.sdk.WellKnownTileServer;
 
 
 /**
