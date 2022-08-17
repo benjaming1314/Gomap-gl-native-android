@@ -72,10 +72,7 @@ public class PolylineActivity extends AppCompatActivity {
               .tilt(0)
               .build();
       mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-      for (LatLng marker:
-           markerList) {
-        addMarker(marker);
-      }
+      addTestMakers();
     });
 
     findViewById(R.id.route).setOnClickListener(new View.OnClickListener() {
@@ -88,11 +85,18 @@ public class PolylineActivity extends AppCompatActivity {
     findViewById(R.id.clear_route).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        markerList.clear();
         mapboxMap.clearDrawLine();
+        addTestMakers();
       }
     });
 
+  }
+
+  private void addTestMakers() {
+    for (LatLng marker:
+            markerList) {
+      addMarker(marker);
+    }
   }
 
   private void requestDirectionRoute(){
@@ -113,9 +117,7 @@ public class PolylineActivity extends AppCompatActivity {
   }
   //
   private void drawLine(DirectionsResponse directionsResponse){
-// TODO: 8/17/2022  
-//    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0).getLegs().get(0));
-
+    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0));
   }
 
   private void addMarker(LatLng point) {
