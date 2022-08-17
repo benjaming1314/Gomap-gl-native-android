@@ -1,42 +1,26 @@
 package com.gomap.demo.activity.annotation;
 
-import android.annotation.SuppressLint;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
-import com.mapbox.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
-import com.gomap.sdk.location.LocationComponent;
-import com.gomap.sdk.location.LocationComponentActivationOptions;
-import com.gomap.sdk.location.engine.LocationEngineCallback;
-import com.gomap.sdk.location.engine.LocationEngineResult;
-import com.gomap.sdk.location.permissions.PermissionsListener;
-import com.gomap.sdk.location.permissions.PermissionsManager;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
-import com.gomap.sdk.route.DirectionService;
-import com.gomap.sdk.route.DirectionServiceCallBack;
-import com.gomap.sdk.route.model.DirectionsResponse;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test activity showcasing to add a Marker on click.
@@ -45,17 +29,16 @@ import java.util.List;
  * </p>
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class PressForMarkerActivity extends AppCompatActivity implements LocationEngineCallback<LocationEngineResult> {
+public class PressForMarkerActivity extends AppCompatActivity {
 
   private MapView mapView;
   private MapboxMap mapboxMap;
   private ArrayList<MarkerOptions> markerList = new ArrayList<>();
 
   private static final DecimalFormat LAT_LON_FORMATTER = new DecimalFormat("#.#####");
+  private final LatLng CENTER = new LatLng(24.4628,54.3697);
 
   private static String STATE_MARKER_LIST = "markerList";
-
-  private  PermissionsManager permissionsManager;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -63,25 +46,8 @@ public class PressForMarkerActivity extends AppCompatActivity implements Locatio
     setContentView(R.layout.activity_press_for_marker);
     mapView = (MapView) findViewById(R.id.mapView);
 
-    if (PermissionsManager.areLocationPermissionsGranted(this)) {
-      mapView.onCreate(savedInstanceState);
-      initMap();
-    } else {
-      permissionsManager = new PermissionsManager(new PermissionsListener(){
-        @Override
-        public void onExplanationNeeded(List<String> permissionsToExplain) {
-          Toast.makeText(PressForMarkerActivity.this,"You need to accept location permissions.", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onPermissionResult(boolean granted) {
-          mapView.onCreate(savedInstanceState);
-          initMap();
-        }
-      });
-      permissionsManager.requestLocationPermissions(this);
-    }
-
+    mapView.onCreate(savedInstanceState);
+    initMap();
 
     findViewById(R.id.clear_marker).setOnClickListener(new View.OnClickListener() {
       @Override
@@ -99,23 +65,15 @@ public class PressForMarkerActivity extends AppCompatActivity implements Locatio
       mapboxMap = map;
       resetMap();
 
-      mapboxMap.setStyle(Style.getPredefinedStyle("Streets"), new Style.OnStyleLoaded() {
-        @SuppressLint("MissingPermission")
-        @Override
-        public void onStyleLoaded(@NonNull @NotNull Style style) {
-          LocationComponent component = mapboxMap.getLocationComponent() ;
+      mapboxMap.setStyle(Style.getPredefinedStyle("Streets"));
 
-          component.activateLocationComponent(
-                  LocationComponentActivationOptions
-                          .builder(PressForMarkerActivity.this, style)
-                          .useDefaultLocationEngine(true)
-                          .build()
-          );
-
-          component.setLocationComponentEnabled(true);
-          component.getLocationEngine().getLastLocation(PressForMarkerActivity.this);
-        }
-      });
+      CameraPosition cameraPosition = new CameraPosition.Builder()
+              .target(CENTER)
+              .zoom(12)
+              .tilt(30)
+              .tilt(0)
+              .build();
+      mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
       mapboxMap.addOnMapLongClickListener(point -> {
         addMarker(point);
@@ -204,26 +162,5 @@ public class PressForMarkerActivity extends AppCompatActivity implements Locatio
     mapView.onLowMemory();
   }
 
-//  @SuppressLint("NonConstantResourceId")
-//  @Override
-//  public boolean onOptionsItemSelected(MenuItem item) {
-//    switch (item.getItemId()) {
-//      case R.id.menuItemReset:
-//        resetMap();
-//        return true;
-//      default:
-//        return super.onOptionsItemSelected(item);
-//    }
-//  }
-
-  @Override
-  public void onSuccess(LocationEngineResult result) {
-    if (!mapView.isDestroyed()) mapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(result.getLastLocation()), 12.0));
-  }
-
-  @Override
-  public void onFailure(@NonNull @NotNull Exception exception) {
-
-  }
 
 }
