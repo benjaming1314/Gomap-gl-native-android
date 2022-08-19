@@ -16,15 +16,11 @@ import com.gomap.sdk.WellKnownTileServer;
  */
 public class GomapApplication extends Application {
 
-  public static final WellKnownTileServer TILE_SERVER = WellKnownTileServer.MapTiler;
-
-  private static final String DEFAULT_API_KEY = "Z7E7B1Ba8vOFikFSFebS";
   @Override
   public void onCreate() {
     super.onCreate();
 
-//    initializeStrictMode();
-    initializeMapbox();
+    initializeMap();
   }
 
 
@@ -42,9 +38,9 @@ public class GomapApplication extends Application {
       .build());
   }
 
-  private void initializeMapbox() {
+  private void initializeMap() {
 
-    Mapbox.getInstance(getApplicationContext(), DEFAULT_API_KEY, TILE_SERVER);
+    Mapbox.init(getApplicationContext());
     MapStrictMode.setStrictModeEnabled(true);
   }
 

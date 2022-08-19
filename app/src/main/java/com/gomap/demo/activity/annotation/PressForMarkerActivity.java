@@ -1,43 +1,26 @@
 package com.gomap.demo.activity.annotation;
 
-import android.annotation.SuppressLint;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
-import com.gomap.sdk.camera.CameraPosition;
-import com.mapbox.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
-import com.gomap.sdk.location.LocationComponent;
-import com.gomap.sdk.location.LocationComponentActivationOptions;
-import com.gomap.sdk.location.engine.LocationEngineCallback;
-import com.gomap.sdk.location.engine.LocationEngineResult;
-import com.gomap.sdk.location.permissions.PermissionsListener;
-import com.gomap.sdk.location.permissions.PermissionsManager;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
-import com.gomap.sdk.route.DirectionService;
-import com.gomap.sdk.route.DirectionServiceCallBack;
-import com.gomap.sdk.route.model.DirectionsResponse;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test activity showcasing to add a Marker on click.
