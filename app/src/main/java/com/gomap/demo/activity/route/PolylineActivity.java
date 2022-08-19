@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
-import com.mapbox.geojson.Point;
+import com.gomap.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
