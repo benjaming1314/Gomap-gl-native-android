@@ -83,7 +83,7 @@ public class PoiListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 LatLng center = findCenter();
 
-                PoiService.getInstance().requestPoi(center,1500,PoiListActivity.this,new PoiService.NetCallBack() {
+                PoiService.getInstance().requestPoi(center,500,PoiListActivity.this,new PoiService.NetCallBack() {
                     @Override
                     public void onCallBack(String response) {
                         Type type = new TypeToken<HttpResponse<MoreResponse<PoiModel>> >() {
