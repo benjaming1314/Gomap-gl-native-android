@@ -5,18 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.gomap.demo.R;
 import com.gomap.demo.model.HttpResponse;
 import com.gomap.demo.model.MoreResponse;
 import com.gomap.demo.model.PoiModel;
-import com.gomap.demo.net.NetUtils;
 import com.gomap.demo.utils.ScreenUtils;
 import com.gomap.geojson.Point;
 import com.gomap.geojson.Polygon;
@@ -29,6 +25,7 @@ import com.gomap.sdk.geometry.LatLngBounds;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
+import com.gomap.sdk.poi.PoiService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -86,7 +83,7 @@ public class PoiListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 LatLng center = findCenter();
 
-                NetUtils.getInstance().requestPoi(center,PoiListActivity.this,new NetUtils.NetCallBack() {
+                PoiService.getInstance().requestPoi(center,1500,PoiListActivity.this,new PoiService.NetCallBack() {
                     @Override
                     public void onCallBack(String response) {
                         Type type = new TypeToken<HttpResponse<MoreResponse<PoiModel>> >() {
