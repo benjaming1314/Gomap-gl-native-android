@@ -3,13 +3,14 @@
     package="com.gomap.demo">
 
     <application
-        android:allowBackup="true"
         android:name=".GomapApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gomapglnativeandroid">
+
         <activity
             android:name=".FeatureOverviewActivity"
             android:exported="true"
@@ -34,6 +35,21 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
 
+
+        <activity android:name=".activity.annotation.PoiListActivity"
+            android:description="@string/description_poi_list"
+            android:exported="true"
+            android:label="@string/activity_poi_list">
+
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+
+
+        </activity>
         <activity
             android:name=".activity.map.SimpleMapActivity"
             android:description="@string/description_simple_map"
@@ -47,7 +63,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.route.PolylineActivity"
             android:description="@string/description_polyline"
@@ -60,8 +75,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
-
         <activity
             android:name=".activity.camera.CameraAnimationTypeActivity"
             android:description="@string/description_camera_animation_types"
@@ -74,7 +87,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.location.LocationFragmentActivity"
             android:description="@string/description_location_fragment"
@@ -86,22 +98,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
-        </activity>
-
-        <!-- Configuration Settings -->
+        </activity> <!-- Configuration Settings -->
         <meta-data
             android:name="com.mapbox.TestEventsServer"
             android:value="api-events-staging.tilestream.net" />
         <meta-data
             android:name="com.mapbox.TestEventsAccessToken"
-            android:value="pk.eyJ1IjoiYmxzdGFnaW5nIiwiYSI6ImNpdDF3OHpoaTAwMDcyeXA5Y3Z0Nmk2dzEifQ.0IfB7v5Qbm2MGVYt8Kb8fg" />
-
-        <!-- Comment out this setting to switch to external storage (and disable internal) in your app -->
+            android:value="pk.eyJ1IjoiYmxzdGFnaW5nIiwiYSI6ImNpdDF3OHpoaTAwMDcyeXA5Y3Z0Nmk2dzEifQ.0IfB7v5Qbm2MGVYt8Kb8fg" /> <!-- Comment out this setting to switch to external storage (and disable internal) in your app -->
         <!-- Alternatively you can rely on FileSource#setResourceCachePath API instead -->
         <!-- <meta-data -->
         <!-- android:name="com.mapbox.SetStorageExternal" -->
         <!-- android:value="true" /> -->
-
         <!-- Set value to true to have tile loading measurements on -->
         <meta-data
             android:name="com.mapbox.MeasureTileDownloadOn"
