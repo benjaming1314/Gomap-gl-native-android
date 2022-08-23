@@ -52,9 +52,7 @@ public class PressForMarkerActivity extends AppCompatActivity {
     findViewById(R.id.clear_marker).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
-        mapboxMap.clearDrawLine();
-
+        mapboxMap.clear();
       }
     });
 
