@@ -24,7 +24,6 @@ import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
-import com.gomap.sdk.geometry.LatLngBounds;
 import com.gomap.sdk.location.LocationComponent;
 import com.gomap.sdk.location.LocationComponentActivationOptions;
 import com.gomap.sdk.location.engine.LocationEngineCallback;
@@ -45,7 +44,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PoiListActivity extends AppCompatActivity {
+public class NearbyPoiListActivity extends AppCompatActivity {
 
     private PermissionsManager permissionsManager;
 
@@ -114,7 +113,7 @@ public class PoiListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 LatLng center = findCenter();
                 Location location = mapboxMap.getLocationComponent().getLastKnownLocation();
-                PoiService.getInstance().requestNearbyPoi(new LatLng(location),center, 500, PoiListActivity.this, new PoiService.NetCallBack() {
+                PoiService.getInstance().requestNearbyPoi(new LatLng(location),center, 500, NearbyPoiListActivity.this, new PoiService.NetCallBack() {
                     @Override
                     public void onCallBack(String response) {
                         handlePoiResult(response);
@@ -159,7 +158,7 @@ public class PoiListActivity extends AppCompatActivity {
                     mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(actualPosition));
 
                 } else {
-                    Toast.makeText(PoiListActivity.this, "no data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NearbyPoiListActivity.this, "no data", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -173,8 +172,8 @@ public class PoiListActivity extends AppCompatActivity {
 
     private LatLng findCenter() {
 
-        int height = ScreenUtils.getScreenHeight(PoiListActivity.this);
-        int width = ScreenUtils.getScreenWidth(PoiListActivity.this);
+        int height = ScreenUtils.getScreenHeight(NearbyPoiListActivity.this);
+        int width = ScreenUtils.getScreenWidth(NearbyPoiListActivity.this);
 
         return mapboxMap.getProjection().fromScreenLocation(new PointF(width / 2, height / 2));
     }
@@ -191,7 +190,7 @@ public class PoiListActivity extends AppCompatActivity {
                     LocationComponent component = mapboxMap.getLocationComponent();
                     component.activateLocationComponent(
                             LocationComponentActivationOptions
-                                    .builder(PoiListActivity.this, style)
+                                    .builder(NearbyPoiListActivity.this, style)
                                     .useDefaultLocationEngine(true)
                                     .build()
                     );

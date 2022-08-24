@@ -36,7 +36,7 @@
         </activity>
 
 
-        <activity android:name=".activity.annotation.PoiListActivity"
+        <activity android:name=".activity.annotation.NearbyPoiListActivity"
             android:description="@string/description_poi_list"
             android:exported="true"
             android:label="@string/activity_poi_list">
