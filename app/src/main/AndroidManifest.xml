@@ -10,7 +10,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gomapglnativeandroid">
-
         <activity
             android:name=".FeatureOverviewActivity"
             android:exported="true"
@@ -34,22 +33,34 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
-
-        <activity android:name=".activity.annotation.PoiListActivity"
+        <activity
+            android:name=".activity.poi.NearbyPoiListActivity"
             android:description="@string/description_poi_list"
             android:exported="true"
             android:label="@string/activity_poi_list">
-
             <meta-data
                 android:name="@string/category"
-                android:value="@string/category_annotation" />
+                android:value="@string/category_poi" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+
+        <activity android:name=".activity.poi.SearchPoiActivity"
+            android:description="@string/description_search_poi_list"
+            android:exported="true"
+            android:label="@string/activity_search_poi_list">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_poi" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
 
 
         </activity>
+
         <activity
             android:name=".activity.map.SimpleMapActivity"
             android:description="@string/description_simple_map"
