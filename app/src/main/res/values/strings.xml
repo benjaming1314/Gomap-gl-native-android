@@ -6,6 +6,9 @@
     <string name="description_press_for_marker">Add marker to map on long press</string>
     <string name="activity_poi_list">Nearby Poi List</string>
 
+    <string name="activity_search_poi_list">Search Poi</string>
+    <string name="description_search_poi_list">Search Poi as keyword</string>
+
     <string name="activity_press_for_marker">Press Map For Marker</string>
     <string name="activity_simple_map">Simple Map</string>
 
@@ -14,6 +17,7 @@
     <string name="activity_location_fragment">Location Fragment</string>
 
     <string name="category_annotation">Annotation</string>
+    <string name="category_poi">Poi</string>
     <string name="category_basic">_Basic</string>
     <string name="category_route">Route</string>
     <string name="category_location">Location</string>
@@ -27,5 +31,11 @@
     <string name="description_polyline">Add a polyline to a map</string>
     <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
     <string name="description_simple_map">Shows a simple map</string>
+
+    <string-array name="search_type">
+        <item>KeyWord</item>
+        <item>Radius</item>
+        <item>Type</item>
+    </string-array>
 
 </resources>

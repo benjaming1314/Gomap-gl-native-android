@@ -1,4 +1,4 @@
-package com.gomap.demo.activity.annotation;
+package com.gomap.demo.activity.poi;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,12 +10,17 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gomap.demo.R;
 import com.gomap.demo.model.HttpResponse;
 import com.gomap.demo.model.MoreResponse;
 import com.gomap.demo.model.PoiModel;
+import com.gomap.demo.utils.DeviceUtils;
 import com.gomap.demo.utils.ScreenUtils;
 import com.gomap.geojson.Point;
 import com.gomap.geojson.Polygon;
@@ -44,7 +49,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearbyPoiListActivity extends AppCompatActivity {
+public class SearchPoiActivity extends AppCompatActivity {
 
     private PermissionsManager permissionsManager;
 
@@ -52,20 +57,29 @@ public class NearbyPoiListActivity extends AppCompatActivity {
     private MapboxMap mapboxMap;
     private ArrayList<MarkerOptions> markerList = new ArrayList<>();
 
-    private static final DecimalFormat LAT_LON_FORMATTER = new DecimalFormat("#.#####");
-    private final LatLng CENTER = new LatLng(24.4628, 54.3697);
-
     private static String STATE_MARKER_LIST = "markerList";
 
+    private EditText edtPoi;
 
-    private View search;
+    private Spinner spinner;
+
+    private int searchType = 0;//0 是 keyword ,1 radius 2 type
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_poi_list);
-        search = findViewById(R.id.txt_search_poi);
+        setContentView(R.layout.activity_search_poi);
+        edtPoi = findViewById(R.id.edt_search_poi);
+
+        spinner = findViewById(R.id.spinner);
+
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.search_type));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(1);
+
         mapView = (MapView) findViewById(R.id.mapView);
+
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
             mapView.onCreate(savedInstanceState);
             initMap();
@@ -89,39 +103,69 @@ public class NearbyPoiListActivity extends AppCompatActivity {
             permissionsManager.requestLocationPermissions(this);
         }
 
-
-        findViewById(R.id.txt_find_center).setOnClickListener(new View.OnClickListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String[] stringArray = getResources().getStringArray(R.array.search_type);
+                searchType = i ;
+            }
 
-                LatLng center = findCenter();
-                addMarker(center);
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(center)
-                        .zoom(12)
-                        .tilt(30)
-                        .tilt(0)
-                        .build();
-                mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
-        search.setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.txt_search_poi).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LatLng center = findCenter();
+
+                String keyword = edtPoi.getText().toString();
+
+                if (keyword.trim().length() == 0){
+                    Toast.makeText(SearchPoiActivity.this,"please input keyword",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Location location = mapboxMap.getLocationComponent().getLastKnownLocation();
-                PoiService.getInstance().requestNearbyPoi(new LatLng(location),center, 500, NearbyPoiListActivity.this, new PoiService.NetCallBack() {
-                    @Override
-                    public void onCallBack(String response) {
-                        handlePoiResult(response);
 
-                    }
-                });
+
+                if (searchType == 0){
+                    PoiService.getInstance().requestPoiAsInputKeyword(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),new PoiService.NetCallBack(){
+
+                        @Override
+                        public void onCallBack(String response) {
+                            handlePoiResult(response);
+                        }
+                    });
+                }else if (searchType == 1){
+                    PoiService.getInstance().requestPoiAsRadius(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),findCenter(),15000,new PoiService.NetCallBack(){
+
+                        @Override
+                        public void onCallBack(String response) {
+                            handlePoiResult(response);
+                        }
+                    });
+                }else {
+                    String[] fields = new String[]{"synonym","bank"};
+                    PoiService.getInstance().requestPoiAsType(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),fields,new PoiService.NetCallBack(){
+
+                        @Override
+                        public void onCallBack(String response) {
+                            handlePoiResult(response);
+                        }
+                    });
+                }
+
             }
         });
+
+    }
+
+    private LatLng findCenter() {
+        int height = ScreenUtils.getScreenHeight(SearchPoiActivity.this);
+        int width = ScreenUtils.getScreenWidth(SearchPoiActivity.this);
+        return mapboxMap.getProjection().fromScreenLocation(new PointF(width / 2, height / 2));
     }
 
     private void handlePoiResult(String response) {
@@ -140,13 +184,14 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                     Marker marker = null;
                     for (PoiModel poiModel :
                             list) {
-                        marker = addMarker(new LatLng(Double.parseDouble(poiModel.getLat()), Double.parseDouble(poiModel.getLng())));
+                        String lat = poiModel.getLat();
+                        if(lat != null && lat.length() > 0){
+                            marker = addMarker(poiModel);
 
-                        listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.getLng()), Double.parseDouble(poiModel.getLat())));
+                            listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.getLng()), Double.parseDouble(poiModel.getLat())));
+                        }
+
                     }
-//                                    if (marker != null){
-//                                        mapboxMap.selectMarker(marker);
-//                                    }
                     // poi 显示在一定范围内
                     List<List<Point>> polygonDefinition = new ArrayList<List<Point>>() {
                         {
@@ -158,7 +203,7 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                     mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(actualPosition));
 
                 } else {
-                    Toast.makeText(NearbyPoiListActivity.this, "no data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchPoiActivity.this, "no data", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -170,13 +215,6 @@ public class NearbyPoiListActivity extends AppCompatActivity {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private LatLng findCenter() {
-
-        int height = ScreenUtils.getScreenHeight(NearbyPoiListActivity.this);
-        int width = ScreenUtils.getScreenWidth(NearbyPoiListActivity.this);
-
-        return mapboxMap.getProjection().fromScreenLocation(new PointF(width / 2, height / 2));
-    }
     @SuppressLint("MissingPermission")
     private void initMap() {
         mapView.getMapAsync(map -> {
@@ -190,7 +228,7 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                     LocationComponent component = mapboxMap.getLocationComponent();
                     component.activateLocationComponent(
                             LocationComponentActivationOptions
-                                    .builder(NearbyPoiListActivity.this, style)
+                                    .builder(SearchPoiActivity.this, style)
                                     .useDefaultLocationEngine(true)
                                     .build()
                     );
@@ -213,20 +251,20 @@ public class NearbyPoiListActivity extends AppCompatActivity {
         });
     }
 
-    private Marker addMarker(LatLng point) {
-        final PointF pixel = mapboxMap.getProjection().toScreenLocation(point);
+    private Marker addMarker(PoiModel poiModel) {
 
-        String title = LAT_LON_FORMATTER.format(point.getLatitude()) + ", "
-                + LAT_LON_FORMATTER.format(point.getLongitude());
-        String snippet = "X = " + (int) pixel.x + ", Y = " + (int) pixel.y;
+        String title = poiModel.getName();
+        String snippet = poiModel.getAddress();
 
         MarkerOptions marker = new MarkerOptions()
-                .position(point)
+                .position(new LatLng(Double.parseDouble(poiModel.getLat()),Double.parseDouble(poiModel.getLng())))
                 .title(title)
                 .snippet(snippet);
 
         markerList.add(marker);
         return mapboxMap.addMarker(marker);
+
+
     }
 
     private void resetMap() {
