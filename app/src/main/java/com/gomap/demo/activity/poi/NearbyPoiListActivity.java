@@ -25,6 +25,7 @@ import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
+import com.gomap.sdk.geometry.LatLngBounds;
 import com.gomap.sdk.location.LocationComponent;
 import com.gomap.sdk.location.LocationComponentActivationOptions;
 import com.gomap.sdk.location.engine.LocationEngineCallback;
@@ -139,9 +140,14 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                 if (list != null && !list.isEmpty()) {
                     ArrayList<Point> listPoint = new ArrayList<Point>();
                     Marker marker = null;
+
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
                     for (PoiModel poiModel :
                             list) {
                         marker = addMarker(poiModel);
+
+                        builder.include(new LatLng(Double.parseDouble(poiModel.getLat()), Double.parseDouble(poiModel.getLng())));
 
                         listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.getLng()), Double.parseDouble(poiModel.getLat())));
                     }
@@ -149,14 +155,15 @@ public class NearbyPoiListActivity extends AppCompatActivity {
 //                                        mapboxMap.selectMarker(marker);
 //                                    }
                     // poi 显示在一定范围内
-                    List<List<Point>> polygonDefinition = new ArrayList<List<Point>>() {
-                        {
-                            add(listPoint);
-                        }
-                    };
-                    CameraPosition actualPosition = mapboxMap.getCameraForGeometry(Polygon.fromLngLats(polygonDefinition));
+//                    List<List<Point>> polygonDefinition = new ArrayList<List<Point>>() {
+//                        {
+//                            add(listPoint);
+//                        }
+//                    };
+//
+//                    CameraPosition actualPosition = mapboxMap.getCameraForGeometry(Polygon.fromLngLats(polygonDefinition));
 
-                    mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(actualPosition));
+                    mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),30));
 
                 } else {
                     Toast.makeText(NearbyPoiListActivity.this, "no data", Toast.LENGTH_SHORT).show();
@@ -243,6 +250,7 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                 .snippet(snippet);
 
         markerList.add(marker);
+
         return mapboxMap.addMarker(marker);
 
 
