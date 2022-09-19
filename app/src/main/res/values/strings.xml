@@ -16,6 +16,7 @@
     <string name="activity_camera_animation_types">Animation Types</string>
     <string name="activity_location_fragment">Location Fragment</string>
     <string name="activity_infowindow_adapter">Custom InfoWindow</string>
+    <string name="activity_animated_symbollayer">Animated SymbolLayer</string>
 
     <string name="category_annotation">Annotation</string>
     <string name="category_poi">Poi</string>
@@ -24,6 +25,7 @@
     <string name="category_location">Location</string>
     <string name="category_camera">Camera</string>
     <string name="category_infowindow">Info Window</string>
+    <string name="category_style">Styling</string>
 
     <string name="button_camera_move">Move</string>
     <string name="button_camera_ease">Ease</string>
@@ -34,6 +36,7 @@
     <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
     <string name="description_simple_map">Shows a simple map</string>
     <string name="description_info_window_adapter">Learn how to create a custom InfoWindow</string>
+    <string name="description_animated_symbollayer">Animate the position change of a symbol layer</string>
 
     <string-array name="search_type">
         <item>KeyWord</item>
