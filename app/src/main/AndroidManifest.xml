@@ -124,6 +124,19 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
 
+        <activity
+            android:name=".activity.annotation.AnimatedSymbolLayerActivity"
+            android:description="@string/description_animated_symbollayer"
+            android:exported="true"
+            android:label="@string/activity_animated_symbollayer">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_style" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.FeatureOverviewActivity" />
+        </activity>
+
         <meta-data
             android:name="com.mapbox.TestEventsServer"
             android:value="api-events-staging.tilestream.net" />
