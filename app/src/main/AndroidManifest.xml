@@ -137,6 +137,15 @@
                 android:value=".activity.FeatureOverviewActivity" />
         </activity>
 
+        <activity android:name=".activity.navigation.NavigationActivity"
+            android:description="@string/navigation_demo"
+            android:exported="true"
+            android:label="@string/navigation">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_basic" />
+        </activity>
+
         <meta-data
             android:name="com.mapbox.TestEventsServer"
             android:value="api-events-staging.tilestream.net" />

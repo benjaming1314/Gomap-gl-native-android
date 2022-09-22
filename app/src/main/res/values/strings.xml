@@ -31,6 +31,9 @@
     <string name="button_camera_ease">Ease</string>
     <string name="button_camera_animate">Animate</string>
 
+    <string name="navigation">Navigation</string>
+    <string name="navigation_demo">Navigation Demo</string>
+
     <string name="description_camera_animation_types">Showcase the different animation types</string>
     <string name="description_polyline">Add a polyline to a map</string>
     <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
