@@ -116,7 +116,9 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     //导航结束
     override fun naviEnd(p0: Double, p1: Double) {
         navigationUIController!!.hideNaviView()
-        llWrapper.visibility = View.VISIBLE
+        ThreadUtils.runMain {
+            llWrapper.visibility = View.VISIBLE
+        }
     }
 
     //重新规划路线结果
