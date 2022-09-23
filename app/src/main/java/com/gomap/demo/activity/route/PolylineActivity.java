@@ -1,13 +1,17 @@
 package com.gomap.demo.activity.route;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
+import com.gomap.geojson.Feature;
 import com.gomap.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
@@ -19,6 +23,9 @@ import com.gomap.sdk.maps.Style;
 import com.gomap.sdk.route.DirectionService;
 import com.gomap.sdk.route.DirectionServiceCallBack;
 import com.gomap.sdk.route.model.DirectionsResponse;
+import com.gomap.sdk.style.layers.PropertyFactory;
+import com.gomap.sdk.style.layers.SymbolLayer;
+import com.gomap.sdk.style.sources.GeoJsonSource;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -86,11 +93,53 @@ public class PolylineActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         mapboxMap.clearDrawLine();
-        addTestMakers();
+//        addTestMakers();
+      }
+    });
+
+    findViewById(R.id.add_layer).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+
+        mapboxMap.getBaseStyle(new Style.OnStyleLoaded() {
+          @Override
+          public void onStyleLoaded(@NonNull Style style) {
+
+            initSymbolLayer(style);
+
+            GeoJsonSource geoJsonSource = new GeoJsonSource("site-source");
+            geoJsonSource.setGeoJson(Feature.fromGeometry(
+                    Point.fromLngLat(
+                            CENTER.getLongitude(),CENTER.getLatitude()
+                    )
+            ));
+            if (style.getSourceAs("site-source") == null) {
+              style.addSource(geoJsonSource);
+            }
+          }
+        });
       }
     });
 
   }
+  private void initSymbolLayer(Style style) {
+    if (style.getLayer("site-layer") == null){
+      Bitmap bitmap = BitmapFactory.decodeResource(
+              getResources(),
+              R.mipmap.biz_ic_site);
+      style.addImage("site-image", bitmap);
+      SymbolLayer symbolLayer = new SymbolLayer("site-layer", "site-source");
+      symbolLayer.withProperties(
+              PropertyFactory.iconImage("site-image"),
+              PropertyFactory.iconAllowOverlap(true)
+      );
+      style.addLayer(symbolLayer);
+
+    }
+
+
+  }
+
 
   private void addTestMakers() {
     for (LatLng marker:

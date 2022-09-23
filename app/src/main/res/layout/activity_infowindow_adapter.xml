@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.gomap.sdk.maps.MapView
         android:id="@id/mapView"
@@ -14,4 +13,35 @@
         app:mapbox_cameraTargetLng="7.573781"
         app:mapbox_cameraZoom="4"/>
 
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_gravity="bottom"
+            android:text="Test"/>
+        <Button
+            android:id="@+id/test1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_gravity="bottom"
+            android:text="Test1"/>
+        <Button
+            android:id="@+id/test2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_gravity="bottom"
+            android:text="Test2"/>
+
+    </LinearLayout>
+
+
+</FrameLayout>
