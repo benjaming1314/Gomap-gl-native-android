@@ -2,9 +2,10 @@ package com.gomap.demo.activity.infowindow;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
   private MapView mapView;
   private MapboxMap mapboxMap;
 
+  private View view ;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -40,7 +42,54 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
       map.setStyle(Style.getPredefinedStyle("Streets"), style -> {
         addMarkers();
         addCustomInfoWindowAdapter();
+
+        mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener(){
+
+          @Override
+          public boolean onInfoWindowClick(@NonNull Marker marker) {
+
+            if (marker != null){
+              Log.i("lxm test,",marker.getPosition().getLatitude()+ " " +marker.getPosition().getLongitude());
+            }
+
+            return false;
+          }
+
+          @Override
+          public boolean onInfoWindowClick(@NonNull LatLng latLng) {
+            Log.i("lxm test,",latLng.getLatitude() + " " +latLng.getLongitude());
+            return false;
+          }
+        });
       });
+    });
+
+    findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        view = LayoutInflater.from(InfoWindowAdapterActivity.this).inflate(R.layout.activity_infowindow_adapter_test_latlng,mapView,false);
+        mapboxMap.showInfoWindow(new LatLng(42.505777, 1.52529),view,"tag1");
+      }
+    });
+    findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        TextView textView = view.findViewById(R.id.test_edit);
+        textView.setText("sadsadsd");
+
+        mapboxMap.updateInfoWindows("tag1");
+
+      }
+    });
+    findViewById(R.id.test2).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        TextView textView = view.findViewById(R.id.test_edit);
+        textView.setText("1312323");
+        mapboxMap.updateInfoWindows("tag1",new LatLng(43.738418, 7.424616));
+      }
     });
   }
 
@@ -71,13 +120,6 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
 
       @Override
       public View getInfoWindow(@NonNull Marker marker) {
-        double longitude = marker.getPosition().getLongitude();
-        double latitude = marker.getPosition().getLatitude();
-        String title = marker.getTitle();
-        if (title.equals("Monaco") || title.equals("Luxembourg")){
-          Toast.makeText(InfoWindowAdapterActivity.this,"click marker:"+longitude +" "+latitude,Toast.LENGTH_SHORT).show();
-          return new View(InfoWindowAdapterActivity.this);
-        }
         TextView textView = new TextView(InfoWindowAdapterActivity.this);
         textView.setText(marker.getTitle());
         textView.setTextColor(Color.WHITE);
