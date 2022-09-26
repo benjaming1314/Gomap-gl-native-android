@@ -46,20 +46,16 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
         mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener(){
 
           @Override
-          public boolean onInfoWindowClick(@NonNull Marker marker) {
-
-            if (marker != null){
-              Log.i("lxm test,",marker.getPosition().getLatitude()+ " " +marker.getPosition().getLongitude());
-            }
-
+          public boolean onInfoWindowClick(String s, @NonNull Marker marker) {
             return false;
           }
 
           @Override
-          public boolean onInfoWindowClick(@NonNull LatLng latLng) {
-            Log.i("lxm test,",latLng.getLatitude() + " " +latLng.getLongitude());
+          public boolean onInfoWindowClick(String s, @NonNull LatLng latLng) {
+            Log.i("lxm test,",s +" "+latLng.getLatitude() + " " +latLng.getLongitude());
             return false;
           }
+
         });
       });
     });
@@ -69,6 +65,11 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
       public void onClick(View v) {
         view = LayoutInflater.from(InfoWindowAdapterActivity.this).inflate(R.layout.activity_infowindow_adapter_test_latlng,mapView,false);
         mapboxMap.showInfoWindow(new LatLng(42.505777, 1.52529),view,"tag1");
+
+
+        TextView textView = new TextView(InfoWindowAdapterActivity.this);
+        textView.setText("tesxtdsad");
+        mapboxMap.showInfoWindow(new LatLng(43.505777, 1.52529),textView,"tag2");
       }
     });
     findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
@@ -78,7 +79,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
         TextView textView = view.findViewById(R.id.test_edit);
         textView.setText("sadsadsd");
 
-        mapboxMap.updateInfoWindows("tag1");
+        mapboxMap.updateInfoWindow("tag1");
 
       }
     });
@@ -88,7 +89,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
 
         TextView textView = view.findViewById(R.id.test_edit);
         textView.setText("1312323");
-        mapboxMap.updateInfoWindows("tag1",new LatLng(43.738418, 7.424616));
+        mapboxMap.updateInfoWindow("tag1",new LatLng(43.738418, 7.424616));
       }
     });
   }
