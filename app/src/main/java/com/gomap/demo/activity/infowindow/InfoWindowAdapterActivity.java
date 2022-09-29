@@ -68,7 +68,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
 
 
         TextView textView = new TextView(InfoWindowAdapterActivity.this);
-        textView.setText("tesxtdsad");
+        textView.setText("Test");
         mapboxMap.showInfoWindow(new LatLng(43.505777, 1.52529),textView,"tag2");
       }
     });
@@ -77,7 +77,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
       public void onClick(View v) {
 
         TextView textView = view.findViewById(R.id.test_edit);
-        textView.setText("sadsadsd");
+        textView.setText("Test change");
 
         mapboxMap.updateInfoWindow("tag1");
 
@@ -88,7 +88,7 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
       public void onClick(View v) {
 
         TextView textView = view.findViewById(R.id.test_edit);
-        textView.setText("1312323");
+        textView.setText("Test Two");
         mapboxMap.updateInfoWindow("tag1",new LatLng(43.738418, 7.424616));
       }
     });

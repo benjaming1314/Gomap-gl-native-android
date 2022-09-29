@@ -134,7 +134,20 @@
                 android:value="@string/category_style" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.FeatureOverviewActivity" />
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+        <activity
+            android:name=".activity.snapshot.SnapshotActivity"
+            android:description="@string/description_snapshot"
+            android:exported="true"
+            android:label="@string/activity_snapshot">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_snapshot" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
         </activity>
 
         <activity android:name=".activity.navigation.NavigationActivity"
