@@ -1,11 +1,13 @@
 package com.gomap.demo.activity.navigation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.gomap.demo.R
+import com.gomap.demo.activity.navigation.parse.ParseUtils
 import com.gomap.maps.navigation.NavigationUIController
 import com.gomap.maps.navigation.listener.OnNavListener
 import com.gomap.maps.navigation.model.NavigationResult
@@ -31,6 +33,8 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     private lateinit var llWrapper:LinearLayout
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapView: MapView
+
+    private val TAG = "navigation"
 
     private var navigationUIController: NavigationUIController? = null
 //    start LngLat{longitude=54.4042004, latitude=24.4866095}
@@ -133,18 +137,21 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
     //路线规划信息，时间 距离 红黄灯等
     override fun routePlanInfo(p0: RoutesInfo?) {
-
+        p0?.let {
+            Log.i(TAG, " ")
+            Log.i(TAG, "共${p0.routesInfo.size}条路线,信息如下: \n" + ParseUtils.covertRouteResult(it) )
+        }
     }
 
     private val navigationResult = NavigationResult()
 
-    //超速
+    //超速 overspeed是否超速，curSpeed当前速度 km/h
     override fun onOverSpeedCallback(overspeed: Boolean, curSpeed: Int) {
         navigationResult.isOverspeed = overspeed
         navigationResult.currentSpeed = curSpeed
     }
 
-    //当前限速信息
+    //当前限速信息 km/h
     override fun getCurRoadSpeedLimit(speed: Int) {
         navigationResult.limitSpeed = speed
     }
