@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -176,25 +177,15 @@ public class PolylineActivity extends AppCompatActivity {
 
     DirectionsRoute directionsRoute = directionsResponse.getRoutes().get(0);
 
-    final PolylineOptions polylineOptions = new PolylineOptions();
-    polylineOptions.color(Color.parseColor("#6495ED"));
-    polylineOptions.width(StringUtils.dp2px(2));
-    for (RouteLeg routeLeg:
-            directionsRoute.getLegs()) {
-      for (LegStep legStep :
-              routeLeg.getSteps()) {
-        List<double[]> coordinates = legStep.getGeometry().getCoordinates();
-        for (double[] strArr :
-                coordinates) {
-          polylineOptions.add(new LatLng(strArr[1], strArr[0]));
-        }
-      }
-    }
     ThreadUtils.runMain(new Runnable() {
 
       @Override
       public void run() {
-        mapboxMap.addPolyline(polylineOptions);
+        final PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.parseColor("#6495ED"));
+        polylineOptions.width(StringUtils.dp2px(2));
+        int dp_10 = StringUtils.dp2px(50);
+        mapboxMap.drawRouteLine(directionsRoute,polylineOptions,new Rect(dp_10,dp_10,dp_10,dp_10));
       }
     });
 
