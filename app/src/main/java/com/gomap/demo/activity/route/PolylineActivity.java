@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.gomap.demo.R;
 import com.gomap.geojson.Feature;
 import com.gomap.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.annotations.Polyline;
 import com.gomap.sdk.annotations.PolylineOptions;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
@@ -88,6 +90,13 @@ public class PolylineActivity extends AppCompatActivity {
               .build();
       mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
       addTestMakers();
+
+      mapboxMap.setOnPolylineClickListener(new MapboxMap.OnPolylineClickListener() {
+        @Override
+        public void onPolylineClick(@NonNull Polyline polyline) {
+          Toast.makeText(PolylineActivity.this,"Click",Toast.LENGTH_SHORT).show();
+        }
+      });
     });
 
     findViewById(R.id.route).setOnClickListener(new View.OnClickListener() {
