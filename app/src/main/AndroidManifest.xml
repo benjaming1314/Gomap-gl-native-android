@@ -159,6 +159,20 @@
                 android:value="@string/category_basic" />
         </activity>
 
+        <activity
+            android:name=".activity.snapshot.MapSnapshotterBitMapOverlayActivity"
+            android:description="@string/description_map_snapshotter_bitmap_overlay"
+            android:exported="true"
+            android:label="@string/activity_map_snapshotter_bitmap_overlay">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_snapshot" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+
         <meta-data
             android:name="com.mapbox.TestEventsServer"
             android:value="api-events-staging.tilestream.net" />

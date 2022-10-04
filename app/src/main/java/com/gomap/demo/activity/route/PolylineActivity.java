@@ -2,6 +2,7 @@ package com.gomap.demo.activity.route;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import com.gomap.demo.R;
 import com.gomap.geojson.Feature;
 import com.gomap.geojson.Point;
 import com.gomap.sdk.annotations.MarkerOptions;
+import com.gomap.sdk.annotations.PolylineOptions;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
@@ -23,9 +25,14 @@ import com.gomap.sdk.maps.Style;
 import com.gomap.sdk.route.DirectionService;
 import com.gomap.sdk.route.DirectionServiceCallBack;
 import com.gomap.sdk.route.model.DirectionsResponse;
+import com.gomap.sdk.route.model.DirectionsRoute;
+import com.gomap.sdk.route.model.LegStep;
+import com.gomap.sdk.route.model.RouteLeg;
 import com.gomap.sdk.style.layers.PropertyFactory;
 import com.gomap.sdk.style.layers.SymbolLayer;
 import com.gomap.sdk.style.sources.GeoJsonSource;
+import com.gomap.sdk.utils.StringUtils;
+import com.gomap.sdk.utils.ThreadUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -166,7 +173,31 @@ public class PolylineActivity extends AppCompatActivity {
   }
   //
   private void drawLine(DirectionsResponse directionsResponse){
-    mapboxMap.drawRouteLine(directionsResponse.getRoutes().get(0));
+
+    DirectionsRoute directionsRoute = directionsResponse.getRoutes().get(0);
+
+    final PolylineOptions polylineOptions = new PolylineOptions();
+    polylineOptions.color(Color.parseColor("#6495ED"));
+    polylineOptions.width(StringUtils.dp2px(2));
+    for (RouteLeg routeLeg:
+            directionsRoute.getLegs()) {
+      for (LegStep legStep :
+              routeLeg.getSteps()) {
+        List<double[]> coordinates = legStep.getGeometry().getCoordinates();
+        for (double[] strArr :
+                coordinates) {
+          polylineOptions.add(new LatLng(strArr[1], strArr[0]));
+        }
+      }
+    }
+    ThreadUtils.runMain(new Runnable() {
+
+      @Override
+      public void run() {
+        mapboxMap.addPolyline(polylineOptions);
+      }
+    });
+
   }
 
   private void addMarker(LatLng point) {
