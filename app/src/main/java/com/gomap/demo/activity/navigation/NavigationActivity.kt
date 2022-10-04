@@ -62,7 +62,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
             //真实导航
 //            mapboxMap.navigationControl.startNavigation()
             //模拟导航
-            mapboxMap.navigationControl.StartSimulationNavigation()
+            mapboxMap.navigationControl.startSimulationNavigation()
             navigationUIController!!.showNaviView()
             llWrapper.visibility = View.GONE
         }
@@ -95,7 +95,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                         )
                     )
                     FrameWorkApiProxy.setMap(mapboxMap.nativeMapPtr)
-                    mapboxMap.navigationControl.init()
+                    mapboxMap.navigationControl.init(this@NavigationActivity)
                     mapboxMap.navigationControl.setNavigationEndListener(this)
                     mapboxMap.navigationControl.setReRoutePlanListener(this)
                     mapboxMap.navigationControl.setRoutePlanListener(this)
