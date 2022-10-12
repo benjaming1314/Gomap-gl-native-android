@@ -172,6 +172,19 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
 
+        <activity
+            android:name=".activity.style.SymbolLayerActivity"
+            android:description="@string/description_symbol_layer"
+            android:exported="true"
+            android:label="@string/activity_symbol_layer">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_style" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
 
         <meta-data
             android:name="com.mapbox.TestEventsServer"
