@@ -92,6 +92,13 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
         mapboxMap.updateInfoWindow("tag1",new LatLng(43.738418, 7.424616));
       }
     });
+
+    findViewById(R.id.test3).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        mapboxMap.hideInfoWindow("tag1");
+      }
+    });
   }
 
   private void addMarkers() {
