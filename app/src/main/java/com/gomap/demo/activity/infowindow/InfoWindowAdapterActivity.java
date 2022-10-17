@@ -66,24 +66,30 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
         view = LayoutInflater.from(InfoWindowAdapterActivity.this).inflate(R.layout.activity_infowindow_adapter_test_latlng,mapView,false);
         mapboxMap.showInfoWindow(new LatLng(42.505777, 1.52529),view,"tag1");
 
-
-        TextView textView = new TextView(InfoWindowAdapterActivity.this);
-        textView.setText("Test");
-        mapboxMap.showInfoWindow(new LatLng(43.505777, 1.52529),textView,"tag2");
       }
     });
     findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
 
-        TextView textView = view.findViewById(R.id.test_edit);
-        textView.setText("Test change");
-
-        mapboxMap.updateInfoWindow("tag1");
+        TextView textView = new TextView(InfoWindowAdapterActivity.this);
+        textView.setText("Test");
+        mapboxMap.showInfoWindow(new LatLng(43.505777, 1.52529),textView,"tag2");
 
       }
     });
     findViewById(R.id.test2).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+
+        TextView textView = view.findViewById(R.id.test_edit);
+        textView.setText("Test change");
+        mapboxMap.updateInfoWindow("tag1");
+
+      }
+    });
+
+    findViewById(R.id.test3).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
 
@@ -93,7 +99,8 @@ public class InfoWindowAdapterActivity extends AppCompatActivity {
       }
     });
 
-    findViewById(R.id.test3).setOnClickListener(new View.OnClickListener() {
+
+    findViewById(R.id.test4).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         mapboxMap.hideInfoWindow("tag1");

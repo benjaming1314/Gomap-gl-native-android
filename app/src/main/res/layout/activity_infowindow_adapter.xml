@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
         <Button
             android:id="@+id/test"
@@ -25,24 +25,32 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_gravity="bottom"
-            android:text="Test"/>
+            android:text="add Infowindow 1"/>
         <Button
             android:id="@+id/test1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_gravity="bottom"
-            android:text="Test1"/>
+            android:text="add Infowindow 1"/>
         <Button
             android:id="@+id/test2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_gravity="bottom"
-            android:text="Test2"/>
+            android:text="Change Text"/>
 
         <Button
             android:id="@+id/test3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_gravity="bottom"
+            android:text="Change Location"/>
+
+        <Button
+            android:id="@+id/test4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
