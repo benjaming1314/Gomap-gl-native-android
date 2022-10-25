@@ -29,19 +29,15 @@ public class SimpleMapActivity extends AppCompatActivity {
     mapView = findViewById(R.id.mapView);
     mapView.onCreate(savedInstanceState);
     mapView.getMapAsync(mapboxMap -> {
-      DefaultStyle[] styles = Style.getPredefinedStyles();
-      if (styles != null && styles.length > 0) {
-        String styleUrl = styles[0].getUrl();
-        mapboxMap.setStyle(new Style.Builder().fromUri(styleUrl));
+      mapboxMap.setStyle(Style.BASE_DEFAULT);
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(CENTER)
-                .zoom(10)
-                .tilt(30)
-                .tilt(0)
-                .build();
-        mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-      }
+      CameraPosition cameraPosition = new CameraPosition.Builder()
+              .target(CENTER)
+              .zoom(10)
+              .tilt(30)
+              .tilt(0)
+              .build();
+      mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     });
   }
 
