@@ -52,7 +52,8 @@
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>
     <string name="toggle_text_font">Toggle text font</string>
-
+    <string name="description_add_bulk_markers">Add Markers In Bulk to a Map</string>
+    <string name="activity_add_bulk_markers">Add Markers In Bulk</string>
     <string-array name="search_type">
         <item>KeyWord</item>
         <item>Radius</item>
