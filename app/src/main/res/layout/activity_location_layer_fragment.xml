@@ -9,4 +9,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="20dp"
+        >
+
+        <TextView
+            android:id="@+id/txt_change_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:padding="5dp"
+            android:layout_margin="3dp"
+            android:text="user gps"/>
+
+        <TextView
+            android:id="@+id/txt_change_gps_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/red"
+            android:text="change gps drawable"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

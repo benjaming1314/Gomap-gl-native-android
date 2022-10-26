@@ -78,41 +78,37 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
         mapView = findViewById<MapView>(R.id.mapView)
         mapView.getMapAsync {
             mapboxMap = it
-            val styles = Style.getPredefinedStyles()
-            if (styles != null && styles.isNotEmpty()) {
-                val styleUrl = styles[0].url
-                mapboxMap.setStyle(
-                    Style.Builder().fromUri(styleUrl)
-                ) {
-                    mapboxMap.moveCamera(
-                        CameraUpdateFactory.newCameraPosition(
-                            CameraPosition.Builder()
-                                .target(LatLng(24.4866095, 54.4042004))
-                                .zoom(16.0)
-                                .bearing(0.0)
-                                .tilt(0.0)
-                                .build()
-                        )
+            mapboxMap.setStyle(
+                Style.BASE_DEFAULT
+            ) {
+                mapboxMap.moveCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        CameraPosition.Builder()
+                            .target(LatLng(24.4866095, 54.4042004))
+                            .zoom(16.0)
+                            .bearing(0.0)
+                            .tilt(0.0)
+                            .build()
                     )
-                    FrameWorkApiProxy.setMap(mapboxMap.nativeMapPtr)
-                    mapboxMap.navigationControl.init(this@NavigationActivity)
-                    mapboxMap.navigationControl.setNavigationEndListener(this)
-                    mapboxMap.navigationControl.setReRoutePlanListener(this)
-                    mapboxMap.navigationControl.setRoutePlanListener(this)
-                    mapboxMap.navigationControl.setOnNavigationListener(this)
-                    navigationUIController = NavigationUIController(mapView)
-                    navigationUIController?.setOnNavListener(object : OnNavListener {
-                        override fun onNaviCancel() {
-                            mapboxMap.navigationControl.finishSimulationNavigation()
-                            navigationUIController?.hideNaviView()
-                            llWrapper.visibility = View.VISIBLE
-                        }
+                )
+                FrameWorkApiProxy.setMap(mapboxMap.nativeMapPtr)
+                mapboxMap.navigationControl.init(this@NavigationActivity)
+                mapboxMap.navigationControl.setNavigationEndListener(this)
+                mapboxMap.navigationControl.setReRoutePlanListener(this)
+                mapboxMap.navigationControl.setRoutePlanListener(this)
+                mapboxMap.navigationControl.setOnNavigationListener(this)
+                navigationUIController = NavigationUIController(mapView)
+                navigationUIController?.setOnNavListener(object : OnNavListener {
+                    override fun onNaviCancel() {
+                        mapboxMap.navigationControl.finishSimulationNavigation()
+                        navigationUIController?.hideNaviView()
+                        llWrapper.visibility = View.VISIBLE
+                    }
 
-                        override fun onSettingClick() {
+                    override fun onSettingClick() {
 
-                        }
-                    })
-                }
+                    }
+                })
             }
         }
     }
