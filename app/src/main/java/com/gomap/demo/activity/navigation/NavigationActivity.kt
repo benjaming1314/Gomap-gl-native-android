@@ -128,7 +128,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
     //路线规划结果
     override fun routePlan(p0: Boolean) {
-
+        mapboxMap.navigationControl.hideLocationIcon()
     }
 
     //路线规划信息，时间 距离 红黄灯等
