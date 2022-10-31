@@ -29,8 +29,6 @@ import com.gomap.sdk.route.DirectionService;
 import com.gomap.sdk.route.DirectionServiceCallBack;
 import com.gomap.sdk.route.model.DirectionsResponse;
 import com.gomap.sdk.route.model.DirectionsRoute;
-import com.gomap.sdk.route.model.LegStep;
-import com.gomap.sdk.route.model.RouteLeg;
 import com.gomap.sdk.style.layers.PropertyFactory;
 import com.gomap.sdk.style.layers.SymbolLayer;
 import com.gomap.sdk.style.sources.GeoJsonSource;
@@ -41,13 +39,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Test activity showcasing the Polyline annotations API.
- * <p>
- * Shows how to add and remove polylines.
- * </p>
- */
-public class PolylineActivity extends AppCompatActivity {
+public class RouteLineActivity extends AppCompatActivity {
 
   private static final String STATE_POLYLINE_OPTIONS = "polylineOptions";
 
@@ -70,7 +62,7 @@ public class PolylineActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_polyline);
+    setContentView(R.layout.activity_routeline);
 
     mapView = findViewById(R.id.mapView);
     mapView.onCreate(savedInstanceState);
@@ -80,7 +72,7 @@ public class PolylineActivity extends AppCompatActivity {
     markerList.add(END);
 
     mapView.getMapAsync(mapboxMap -> {
-      PolylineActivity.this.mapboxMap = mapboxMap;
+      RouteLineActivity.this.mapboxMap = mapboxMap;
       mapboxMap.setStyle(Style.getPredefinedStyle("Streets"));
       CameraPosition cameraPosition = new CameraPosition.Builder()
               .target(CENTER)
@@ -94,7 +86,7 @@ public class PolylineActivity extends AppCompatActivity {
       mapboxMap.setOnPolylineClickListener(new MapboxMap.OnPolylineClickListener() {
         @Override
         public void onPolylineClick(@NonNull Polyline polyline) {
-          Toast.makeText(PolylineActivity.this,"Click",Toast.LENGTH_SHORT).show();
+          Toast.makeText(RouteLineActivity.this,"Click",Toast.LENGTH_SHORT).show();
         }
       });
     });

@@ -87,10 +87,10 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
         <activity
-            android:name=".activity.route.PolylineActivity"
-            android:description="@string/description_polyline"
+            android:name=".activity.route.RouteLineActivity"
+            android:description="@string/description_routeline"
             android:exported="true"
-            android:label="@string/activity_polyline">
+            android:label="@string/activity_routeline">
             <meta-data
                 android:name="@string/category"
                 android:value="@string/category_route" />
@@ -204,6 +204,20 @@
             android:description="@string/description_add_bulk_markers"
             android:exported="true"
             android:label="@string/activity_add_bulk_markers">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+
+        <activity
+            android:name=".activity.annotation.PolylineActivity"
+            android:description="@string/description_polyline"
+            android:exported="true"
+            android:label="@string/activity_polyline">
             <meta-data
                 android:name="@string/category"
                 android:value="@string/category_annotation" />

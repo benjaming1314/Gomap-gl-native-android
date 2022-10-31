@@ -12,6 +12,7 @@
     <string name="activity_press_for_marker">Press Map For Marker</string>
     <string name="activity_simple_map">Simple Map</string>
 
+    <string name="activity_routeline">Route-line</string>
     <string name="activity_polyline">Polyline</string>
     <string name="activity_camera_animation_types">Animation Types</string>
     <string name="activity_location_fragment">Location Fragment</string>
@@ -40,6 +41,7 @@
 
     <string name="description_camera_animation_types">Showcase the different animation types</string>
     <string name="description_polyline">Add a polyline to a map</string>
+    <string name="description_routeline">Add a route to a map</string>
     <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
     <string name="description_simple_map">Shows a simple map</string>
     <string name="description_info_window_adapter">Learn how to create a custom InfoWindow</string>
