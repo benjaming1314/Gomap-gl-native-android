@@ -240,6 +240,8 @@
         <meta-data
             android:name="com.mapbox.MeasureTileDownloadOn"
             android:value="false" />
+			
+			
 
     </application>
 
