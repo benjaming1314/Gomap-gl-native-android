@@ -85,8 +85,9 @@ public class RouteLineActivity extends AppCompatActivity {
 
       mapboxMap.setOnPolylineClickListener(new MapboxMap.OnPolylineClickListener() {
         @Override
-        public void onPolylineClick(@NonNull Polyline polyline) {
+        public boolean onPolylineClick(@NonNull Polyline polyline) {
           Toast.makeText(RouteLineActivity.this,"Click",Toast.LENGTH_SHORT).show();
+          return true;
         }
       });
     });

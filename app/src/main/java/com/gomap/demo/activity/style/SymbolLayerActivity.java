@@ -14,11 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.android.gestures.AndroidGesturesManager;
 import com.gomap.demo.R;
+import com.gomap.geojson.LineString;
 import com.gomap.sdk.annotation.OnSymbolClickListener;
 import com.gomap.sdk.annotation.Symbol;
 import com.gomap.sdk.annotation.SymbolManager;
 import com.gomap.sdk.annotation.SymbolOptions;
 import com.gomap.sdk.maps.UiSettings;
+import com.gomap.sdk.style.layers.Layer;
+import com.gomap.sdk.style.layers.LineLayer;
+import com.gomap.sdk.style.layers.PropertyFactory;
 import com.gomap.sdk.utils.FontUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -39,6 +43,7 @@ import com.gomap.sdk.style.sources.GeoJsonSource;
 import com.gomap.sdk.style.sources.Source;
 import com.gomap.sdk.utils.BitmapUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -86,324 +91,379 @@ import static com.gomap.sdk.style.layers.PropertyFactory.textSize;
  */
 public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.OnMapClickListener, OnMapReadyCallback {
 
-  private static final String ID_FEATURE_PROPERTY = "id";
-  private static final String SELECTED_FEATURE_PROPERTY = "selected";
-  private static final String TITLE_FEATURE_PROPERTY = "title";
+    private static final String ID_FEATURE_PROPERTY = "id";
+    private static final String SELECTED_FEATURE_PROPERTY = "selected";
+    private static final String TITLE_FEATURE_PROPERTY = "title";
 
-  private static final String[] ITALIC_FONT_STACK = FontUtils.ITALIC_FONT_STACK;
-  private static final String[] NORMAL_FONT_STACK= FontUtils.NORMAL_FONT_STACK;
+    private static final String[] ITALIC_FONT_STACK = FontUtils.ITALIC_FONT_STACK;
+    private static final String[] NORMAL_FONT_STACK = FontUtils.NORMAL_FONT_STACK;
 
-  // layer & source constants
-  private static final String MARKER_SOURCE = "marker-source";
-  private static final String MARKER_LAYER = "marker-layer";
-  private static final String MAPBOX_SIGN_SOURCE = "mapbox-sign-source";
-  private static final String MAPBOX_SIGN_LAYER = "mapbox-sign-layer";
-  private static final String NUMBER_FORMAT_SOURCE = "mapbox-number-source";
-  private static final String NUMBER_FORMAT_LAYER = "mapbox-number-layer";
+    // layer & source constants
+    private static final String MARKER_SOURCE = "marker-source";
+    private static final String MARKER_LAYER = "marker-layer";
+    private static final String MAPBOX_SIGN_SOURCE = "mapbox-sign-source";
+    private static final String MAPBOX_SIGN_LAYER = "mapbox-sign-layer";
+    private static final String NUMBER_FORMAT_SOURCE = "mapbox-number-source";
+    private static final String NUMBER_FORMAT_LAYER = "mapbox-number-layer";
 
-  private SymbolManager symbolManager ;
+    private SymbolManager symbolManager;
 
-  private static final Expression TEXT_FIELD_EXPRESSION =
-          switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)),
-                  format(
-                          formatEntry(
-                                  get(TITLE_FEATURE_PROPERTY),
-                                  formatTextFont(ITALIC_FONT_STACK)
-                          ),
-                          formatEntry("\nis fun!", formatFontScale(0.75))
-                  ),
-                  format(
-                          formatEntry("This is", formatFontScale(0.75)),
-                          formatEntry(
-                                  concat(literal("\n"), get(TITLE_FEATURE_PROPERTY)),
-                                  formatFontScale(1.25),
-                                  formatTextFont(ITALIC_FONT_STACK)
-                          )
-                  )
-          );
-
-  private final Random random = new Random();
-  private GeoJsonSource markerSource;
-  private FeatureCollection markerCollection;
-  private SymbolLayer markerSymbolLayer;
-  private SymbolLayer mapboxSignSymbolLayer;
-  private SymbolLayer numberFormatSymbolLayer;
-  private MapboxMap mapboxMap;
-  private MapView mapView;
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_symbollayer);
-
-    // Create map configuration
-    MapboxMapOptions mapboxMapOptions = MapboxMapOptions.createFromAttributes(this);
-    mapboxMapOptions.camera(new CameraPosition.Builder().target(
-                    new LatLng(24.4628, 54.3697))
-            .zoom(13)
-            .build()
-    );
-
-    // Create map programmatically, add to view hierarchy
-    mapView = new MapView(this, mapboxMapOptions);
-    mapView.getMapAsync(this);
-    mapView.onCreate(savedInstanceState);
-    ((ViewGroup) findViewById(R.id.container)).addView(mapView);
-
-    // Use OnStyleImageMissing API to lazily load an icon
-    mapView.addOnStyleImageMissingListener(id -> {
-      Style style = mapboxMap.getStyle();
-      if (style != null) {
-        Timber.e("Adding image with id: %s", id);
-        Bitmap androidIcon = BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.mipmap.ic_launcher));
-        style.addImage(id, Objects.requireNonNull(androidIcon));
-      }
-    });
-  }
-
-  @Override
-  public void onMapReady(@NonNull MapboxMap mapboxMap) {
-    this.mapboxMap = mapboxMap;
-    Bitmap carBitmap = BitmapUtils.getBitmapFromDrawable(
-            getResources().getDrawable(R.drawable.ic_directions_car_black));
-
-    // marker source
-    markerCollection = FeatureCollection.fromFeatures(new Feature[] {
-            Feature.fromGeometry(Point.fromLngLat(54.3667,24.4628), featureProperties("1", "Android")),
-            Feature.fromGeometry(Point.fromLngLat(54.3697,24.4658), featureProperties("2", "Car"))
-    });
-    markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
-
-    // marker layer
-    markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
-            .withProperties(
-                    iconImage(get(TITLE_FEATURE_PROPERTY)),
-                    iconIgnorePlacement(true),
-                    iconAllowOverlap(true),
-                    iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
-                    iconAnchor(Property.ICON_ANCHOR_BOTTOM),
-                    iconColor(Color.BLUE),
-                    textField(TEXT_FIELD_EXPRESSION),
-                    textFont(NORMAL_FONT_STACK),
-                    textColor(Color.BLUE),
-                    textAllowOverlap(true),
-                    textIgnorePlacement(true),
-                    textAnchor(Property.TEXT_ANCHOR_TOP),
-                    textSize(10f)
+    private static final Expression TEXT_FIELD_EXPRESSION =
+            switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)),
+                    format(
+                            formatEntry(
+                                    get(TITLE_FEATURE_PROPERTY),
+                                    formatTextFont(ITALIC_FONT_STACK)
+                            ),
+                            formatEntry("\nis fun!", formatFontScale(0.75))
+                    ),
+                    format(
+                            formatEntry("This is", formatFontScale(0.75)),
+                            formatEntry(
+                                    concat(literal("\n"), get(TITLE_FEATURE_PROPERTY)),
+                                    formatFontScale(1.25),
+                                    formatTextFont(ITALIC_FONT_STACK)
+                            )
+                    )
             );
 
-    // mapbox sign layer
-    Source mapboxSignSource = new GeoJsonSource(MAPBOX_SIGN_SOURCE, Point.fromLngLat(54.3597,24.4628));
-    mapboxSignSymbolLayer = new SymbolLayer(MAPBOX_SIGN_LAYER, MAPBOX_SIGN_SOURCE);
-    shuffleMapboxSign();
+    private final Random random = new Random();
+    private GeoJsonSource markerSource;
+    private FeatureCollection markerCollection;
+    private SymbolLayer markerSymbolLayer;
+    private SymbolLayer mapboxSignSymbolLayer;
+    private SymbolLayer numberFormatSymbolLayer;
+    private MapboxMap mapboxMap;
+    private MapView mapView;
+    private static final String ID_ICON_AIRPORT = "airport";
 
-    // number format layer
-    Source numberFormatSource = new GeoJsonSource(NUMBER_FORMAT_SOURCE, Point.fromLngLat(54.3697,24.4128));
-    numberFormatSymbolLayer = new SymbolLayer(NUMBER_FORMAT_LAYER, NUMBER_FORMAT_SOURCE);
-    numberFormatSymbolLayer.setProperties(
-            textField(
-                    numberFormat(123.456789, locale("nl-NL"), currency("EUR"))
-            )
-    );
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_symbollayer);
 
-    mapboxMap.setStyle(new Style.Builder()
-                    .fromUri(Style.BASE_DEFAULT)
-                    .withImage("Car", Objects.requireNonNull(carBitmap), false)
-                    .withSources(markerSource, mapboxSignSource, numberFormatSource)
-                    .withLayers(markerSymbolLayer, mapboxSignSymbolLayer, numberFormatSymbolLayer)
-            , new Style.OnStyleLoaded() {
-              @Override
-              public void onStyleLoaded(@NonNull Style style) {
-                symbolManager = new SymbolManager(mapView, mapboxMap, style);
-                symbolManager.setIconAllowOverlap(true);
-                symbolManager.setTextAllowOverlap(true);
+        // Create map configuration
+        MapboxMapOptions mapboxMapOptions = MapboxMapOptions.createFromAttributes(this);
+        mapboxMapOptions.camera(new CameraPosition.Builder().target(
+                        new LatLng(24.4628, 54.3697))
+                .zoom(13)
+                .build()
+        );
 
-                // Create Symbol
-                SymbolOptions SymbolOptions = new SymbolOptions()
-                        .withLatLng(new LatLng(24.4628,54.3697))
-                        .withTextField("Test Data");
-                symbolManager.create(SymbolOptions);
+        // Create map programmatically, add to view hierarchy
+        mapView = new MapView(this, mapboxMapOptions);
+        mapView.getMapAsync(this);
+        mapView.onCreate(savedInstanceState);
+        ((ViewGroup) findViewById(R.id.container)).addView(mapView);
 
-                symbolManager.addClickListener(new OnSymbolClickListener() {
-                  @Override
-                  public boolean onAnnotationClick(Symbol symbol) {
-                    Toast.makeText(SymbolLayerActivity.this,"Click:"+symbol.getTextField(),Toast.LENGTH_SHORT).show();
-                    return false;
-                  }
-                });
-              }
-            });
+        // Use OnStyleImageMissing API to lazily load an icon
+        mapView.addOnStyleImageMissingListener(id -> {
+            Style style = mapboxMap.getStyle();
+            if (style != null) {
+                Timber.e("Adding image with id: %s", id);
+                Bitmap androidIcon = BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.mipmap.ic_launcher));
+                style.addImage(id, Objects.requireNonNull(androidIcon));
+            }
+        });
+    }
 
-    // Set a click-listener so we can manipulate the map
-    mapboxMap.addOnMapClickListener(SymbolLayerActivity.this);
-  }
+    @Override
+    public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        this.mapboxMap = mapboxMap;
+        Bitmap carBitmap = BitmapUtils.getBitmapFromDrawable(
+                getResources().getDrawable(R.drawable.ic_directions_car_black));
 
-  @Override
-  public boolean onMapClick(@NonNull LatLng point) {
-    // Query which features are clicked
-    PointF screenLoc = mapboxMap.getProjection().toScreenLocation(point);
-    List<Feature> markerFeatures = mapboxMap.queryRenderedFeatures(screenLoc, MARKER_LAYER);
-    if (!markerFeatures.isEmpty()) {
-      for (Feature feature : Objects.requireNonNull(markerCollection.features())) {
-        if (feature.getStringProperty(ID_FEATURE_PROPERTY)
-                .equals(markerFeatures.get(0).getStringProperty(ID_FEATURE_PROPERTY))) {
+        // marker source
+        markerCollection = FeatureCollection.fromFeatures(new Feature[]{
+                Feature.fromGeometry(Point.fromLngLat(54.3667, 24.4628), featureProperties("1", "Android")),
+                Feature.fromGeometry(Point.fromLngLat(54.3697, 24.4658), featureProperties("2", "Car"))
+        });
+        markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
 
-          // use DDS
-          boolean selected = feature.getBooleanProperty(SELECTED_FEATURE_PROPERTY);
-          feature.addBooleanProperty(SELECTED_FEATURE_PROPERTY, !selected);
+        // marker layer
+        markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
+                .withProperties(
+                        iconImage(get(TITLE_FEATURE_PROPERTY)),
+                        iconIgnorePlacement(true),
+                        iconAllowOverlap(true),
+                        iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
+                        iconAnchor(Property.ICON_ANCHOR_BOTTOM),
+                        iconColor(Color.BLUE),
+                        textField(TEXT_FIELD_EXPRESSION),
+                        textFont(NORMAL_FONT_STACK),
+                        textColor(Color.BLUE),
+                        textAllowOverlap(true),
+                        textIgnorePlacement(true),
+                        textAnchor(Property.TEXT_ANCHOR_TOP),
+                        textSize(10f)
+                );
 
-          // validate symbol flicker regression for #13407
-          markerSymbolLayer.setProperties(iconOpacity(match(
-                  get(ID_FEATURE_PROPERTY), literal(1.0f),
-                  stop(feature.getStringProperty("id"), selected ? 0.3f : 1.0f)
-          )));
-        }
-      }
-      markerSource.setGeoJson(markerCollection);
-    } else {
-      List<Feature> mapboxSignFeatures = mapboxMap.queryRenderedFeatures(screenLoc, MAPBOX_SIGN_LAYER);
-      if (!mapboxSignFeatures.isEmpty()) {
+        // mapbox sign layer
+        Source mapboxSignSource = new GeoJsonSource(MAPBOX_SIGN_SOURCE, Point.fromLngLat(54.3597, 24.4628));
+        mapboxSignSymbolLayer = new SymbolLayer(MAPBOX_SIGN_LAYER, MAPBOX_SIGN_SOURCE);
         shuffleMapboxSign();
-      }
+
+        // number format layer
+        Source numberFormatSource = new GeoJsonSource(NUMBER_FORMAT_SOURCE, Point.fromLngLat(54.3697, 24.4128));
+        numberFormatSymbolLayer = new SymbolLayer(NUMBER_FORMAT_LAYER, NUMBER_FORMAT_SOURCE);
+        numberFormatSymbolLayer.setProperties(
+                textField(
+                        numberFormat(123.456789, locale("nl-NL"), currency("EUR"))
+                )
+        );
+
+        mapboxMap.setStyle(new Style.Builder()
+                        .fromUri(Style.BASE_DEFAULT)
+                        .withImage("Car", Objects.requireNonNull(carBitmap), false)
+                        .withSources(markerSource, mapboxSignSource, numberFormatSource)
+                        .withLayers(markerSymbolLayer, mapboxSignSymbolLayer, numberFormatSymbolLayer)
+                , new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        symbolManager = new SymbolManager(mapView, mapboxMap, style);
+                        symbolManager.setIconAllowOverlap(true);
+                        symbolManager.setTextAllowOverlap(true);
+
+                        // Create Symbol
+                        SymbolOptions SymbolOptions = new SymbolOptions()
+                                .withLatLng(new LatLng(24.4628, 54.3697))
+                                .withTextField("Test Data");
+                        symbolManager.create(SymbolOptions);
+
+                        symbolManager.addClickListener(new OnSymbolClickListener() {
+                            @Override
+                            public boolean onAnnotationClick(Symbol symbol) {
+                                Toast.makeText(SymbolLayerActivity.this, "Click:" + symbol.getTextField(), Toast.LENGTH_SHORT).show();
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+        // Set a click-listener so we can manipulate the map
+        mapboxMap.addOnMapClickListener(SymbolLayerActivity.this);
+
+        mapboxMap.getBaseStyle(new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
+                addLine(style);
+            }
+        });
+
     }
 
-    return false;
-  }
 
-  private void toggleTextSize() {
-    if (markerSymbolLayer != null) {
-      Number size = markerSymbolLayer.getTextSize().getValue();
-      if (size != null) {
-        markerSymbolLayer.setProperties((float) size > 10 ? textSize(10f) : textSize(20f));
-      }
+    private void addLine(Style style) {
+
+        SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
+        symbolManager.setIconAllowOverlap(true);
+        symbolManager.setTextAllowOverlap(true);
+
+        ArrayList list = new ArrayList<Point>();
+        list.add(Point.fromLngLat(54.3167, 24.4128));
+        list.add(Point.fromLngLat(54.3267, 24.4228));
+        list.add(Point.fromLngLat(54.3367, 24.4328));
+        list.add(Point.fromLngLat(54.3467, 24.4428));
+        list.add(Point.fromLngLat(54.3567, 24.4528));
+        list.add(Point.fromLngLat(54.3667, 24.4628));
+        list.add(Point.fromLngLat(54.3767, 24.4728));
+        list.add(Point.fromLngLat(54.3867, 24.4828));
+
+        String layerId = "line-layer-test";
+        String sourceId = "line-source-test";
+        style.addSource(
+                new GeoJsonSource(
+                        sourceId, Feature.fromGeometry(LineString.fromLngLats(list))
+                )
+        );
+        Layer layer = new LineLayer(layerId, sourceId);
+        layer.setProperties(PropertyFactory.lineColor(Color.BLUE));
+        layer.setProperties(PropertyFactory.lineCap(Property.LINE_CAP_ROUND));
+        layer.setProperties(PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND));
+        layer.setProperties(PropertyFactory.lineWidth(5f));
+
+        style.addLayerBelow(layer,symbolManager.getLayerId());
+
+        style.addImage(ID_ICON_AIRPORT,
+                BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.drawable.ic_airplanemode_active_black_24dp)),
+                true);
+        // create a symbol
+        SymbolOptions symbolOptions = new SymbolOptions()
+                .withLatLng(new LatLng(24.4628, 54.3667))
+                .withIconImage(ID_ICON_AIRPORT)
+                .withIconSize(1.3f)
+                .withSymbolSortKey(10f)
+                .withDraggable(true);
+        Symbol symbol = symbolManager.create(symbolOptions);
+        Timber.e(symbol.toString());
     }
-  }
 
-  private void toggleTextField() {
-    if (markerSymbolLayer != null) {
-      if (TEXT_FIELD_EXPRESSION.equals(markerSymbolLayer.getTextField().getExpression())) {
-        markerSymbolLayer.setProperties(textField("āA"));
-      } else {
-        markerSymbolLayer.setProperties(textField(TEXT_FIELD_EXPRESSION));
-      }
+    @Override
+    public boolean onMapClick(@NonNull LatLng point) {
+        // Query which features are clicked
+        PointF screenLoc = mapboxMap.getProjection().toScreenLocation(point);
+        List<Feature> markerFeatures = mapboxMap.queryRenderedFeatures(screenLoc, MARKER_LAYER);
+        if (!markerFeatures.isEmpty()) {
+            for (Feature feature : Objects.requireNonNull(markerCollection.features())) {
+                if (feature.getStringProperty(ID_FEATURE_PROPERTY)
+                        .equals(markerFeatures.get(0).getStringProperty(ID_FEATURE_PROPERTY))) {
+
+                    // use DDS
+                    boolean selected = feature.getBooleanProperty(SELECTED_FEATURE_PROPERTY);
+                    feature.addBooleanProperty(SELECTED_FEATURE_PROPERTY, !selected);
+
+                    // validate symbol flicker regression for #13407
+                    markerSymbolLayer.setProperties(iconOpacity(match(
+                            get(ID_FEATURE_PROPERTY), literal(1.0f),
+                            stop(feature.getStringProperty("id"), selected ? 0.3f : 1.0f)
+                    )));
+                }
+            }
+            markerSource.setGeoJson(markerCollection);
+        } else {
+            List<Feature> mapboxSignFeatures = mapboxMap.queryRenderedFeatures(screenLoc, MAPBOX_SIGN_LAYER);
+            if (!mapboxSignFeatures.isEmpty()) {
+                shuffleMapboxSign();
+            }
+        }
+
+        return false;
     }
-  }
 
-  private void toggleTextFont() {
-    if (markerSymbolLayer != null) {
-      if (Arrays.equals(markerSymbolLayer.getTextFont().getValue(), NORMAL_FONT_STACK)) {
-        markerSymbolLayer.setProperties(textFont(ITALIC_FONT_STACK));
-      } else {
-        markerSymbolLayer.setProperties(textFont(NORMAL_FONT_STACK));
-      }
+    private void toggleTextSize() {
+        if (markerSymbolLayer != null) {
+            Number size = markerSymbolLayer.getTextSize().getValue();
+            if (size != null) {
+                markerSymbolLayer.setProperties((float) size > 10 ? textSize(10f) : textSize(20f));
+            }
+        }
     }
-  }
 
-  private void shuffleMapboxSign() {
-    if (mapboxSignSymbolLayer != null) {
-      mapboxSignSymbolLayer.setProperties(
-              textField(
-                      format(
-                              formatEntry("M", formatFontScale(2)),
-                              getRandomColorEntryForString("a"),
-                              getRandomColorEntryForString("p"),
-                              getRandomColorEntryForString("b"),
-                              getRandomColorEntryForString("o"),
-                              getRandomColorEntryForString("x")
-                      )
-              ),
-              textColor(Color.BLACK),
-              textFont(ITALIC_FONT_STACK),
-              textSize(25f),
-              textRotationAlignment(Property.TEXT_ROTATION_ALIGNMENT_MAP)
-      );
+    private void toggleTextField() {
+        if (markerSymbolLayer != null) {
+            if (TEXT_FIELD_EXPRESSION.equals(markerSymbolLayer.getTextField().getExpression())) {
+                markerSymbolLayer.setProperties(textField("āA"));
+            } else {
+                markerSymbolLayer.setProperties(textField(TEXT_FIELD_EXPRESSION));
+            }
+        }
     }
-  }
 
-  private Expression.FormatEntry getRandomColorEntryForString(@NonNull String string) {
-    return formatEntry(string,
-            formatTextColor(
-                    rgb(
-                            random.nextInt(256),
-                            random.nextInt(256),
-                            random.nextInt(256)
-                    )
-            ));
-  }
-
-  private JsonObject featureProperties(@NonNull String id, @NonNull String title) {
-    JsonObject object = new JsonObject();
-    object.add(ID_FEATURE_PROPERTY, new JsonPrimitive(id));
-    object.add(TITLE_FEATURE_PROPERTY, new JsonPrimitive(title));
-    object.add(SELECTED_FEATURE_PROPERTY, new JsonPrimitive(false));
-    return object;
-  }
-
-  @Override
-  protected void onStart() {
-    super.onStart();
-    mapView.onStart();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    mapView.onResume();
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    mapView.onPause();
-  }
-
-  @Override
-  protected void onStop() {
-    super.onStop();
-    mapView.onStop();
-  }
-
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    mapView.onSaveInstanceState(outState);
-  }
-
-  @Override
-  public void onLowMemory() {
-    super.onLowMemory();
-    mapView.onLowMemory();
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if (mapboxMap != null) {
-      mapboxMap.removeOnMapClickListener(this);
+    private void toggleTextFont() {
+        if (markerSymbolLayer != null) {
+            if (Arrays.equals(markerSymbolLayer.getTextFont().getValue(), NORMAL_FONT_STACK)) {
+                markerSymbolLayer.setProperties(textFont(ITALIC_FONT_STACK));
+            } else {
+                markerSymbolLayer.setProperties(textFont(NORMAL_FONT_STACK));
+            }
+        }
     }
-    mapView.onDestroy();
-  }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_symbol_layer, menu);
-    return true;
-  }
+    private void shuffleMapboxSign() {
+        if (mapboxSignSymbolLayer != null) {
+            mapboxSignSymbolLayer.setProperties(
+                    textField(
+                            format(
+                                    formatEntry("M", formatFontScale(2)),
+                                    getRandomColorEntryForString("a"),
+                                    getRandomColorEntryForString("p"),
+                                    getRandomColorEntryForString("b"),
+                                    getRandomColorEntryForString("o"),
+                                    getRandomColorEntryForString("x")
+                            )
+                    ),
+                    textColor(Color.BLACK),
+                    textFont(ITALIC_FONT_STACK),
+                    textSize(25f),
+                    textRotationAlignment(Property.TEXT_ROTATION_ALIGNMENT_MAP)
+            );
+        }
+    }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.action_toggle_text_size:
-        toggleTextSize();
+    private Expression.FormatEntry getRandomColorEntryForString(@NonNull String string) {
+        return formatEntry(string,
+                formatTextColor(
+                        rgb(
+                                random.nextInt(256),
+                                random.nextInt(256),
+                                random.nextInt(256)
+                        )
+                ));
+    }
+
+    private JsonObject featureProperties(@NonNull String id, @NonNull String title) {
+        JsonObject object = new JsonObject();
+        object.add(ID_FEATURE_PROPERTY, new JsonPrimitive(id));
+        object.add(TITLE_FEATURE_PROPERTY, new JsonPrimitive(title));
+        object.add(SELECTED_FEATURE_PROPERTY, new JsonPrimitive(false));
+        return object;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mapboxMap != null) {
+            mapboxMap.removeOnMapClickListener(this);
+        }
+        mapView.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_symbol_layer, menu);
         return true;
-      case R.id.action_toggle_text_field:
-        toggleTextField();
-        return true;
-      case R.id.action_toggle_text_font:
-        toggleTextFont();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
     }
-  }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_toggle_text_size:
+                toggleTextSize();
+                return true;
+            case R.id.action_toggle_text_field:
+                toggleTextField();
+                return true;
+            case R.id.action_toggle_text_font:
+                toggleTextFont();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

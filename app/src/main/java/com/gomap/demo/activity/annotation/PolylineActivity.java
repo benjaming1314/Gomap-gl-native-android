@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
@@ -68,11 +69,17 @@ public class PolylineActivity extends AppCompatActivity {
     mapView.getMapAsync(mapboxMap -> {
       PolylineActivity.this.mapboxMap = mapboxMap;
       mapboxMap.setStyle(Style.BASE_DEFAULT);
-      mapboxMap.setOnPolylineClickListener(polyline -> Toast.makeText(
-        PolylineActivity.this,
-        "You clicked on polyline with id = " + polyline.getId(),
-        Toast.LENGTH_SHORT
-      ).show());
+      mapboxMap.setOnPolylineClickListener(new MapboxMap.OnPolylineClickListener() {
+        @Override
+        public boolean onPolylineClick(@NonNull Polyline polyline) {
+          Toast.makeText(
+                  PolylineActivity.this,
+                  "You clicked on polyline with id = " + polyline.getId(),
+                  Toast.LENGTH_SHORT
+          ).show();
+          return true;
+        }
+      });
 
       polylines = mapboxMap.addPolylines(polylineOptions);
     });
