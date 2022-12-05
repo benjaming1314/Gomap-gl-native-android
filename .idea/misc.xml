@@ -3,8 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/drawable/ic_airplanemode_active_black_24dp.xml" value="0.1" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/drawable/ic_directions_car_black.xml" value="0.1025" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1025" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/drawable/ic_location_city.xml" value="0.1025" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/drawable/line_divider.xml" value="0.1025" />
         <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/layout/activity_animated_marker.xml" value="0.17980072463768115" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/layout/activity_dds_image_clustering.xml" value="0.18205128205128204" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/layout/activity_marker_bulk.xml" value="0.23505434782608695" />
         <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/layout/activity_navigation.xml" value="0.17708333333333334" />
+        <entry key="..\:/Users/dong.jin/code/githupGomapDemo/Gomap-gl-native-android/app/src/main/res/layout/activity_text_clustering.xml" value="0.2760416666666667" />
       </map>
     </option>
   </component>
