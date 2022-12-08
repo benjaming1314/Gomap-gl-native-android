@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_anim_symbollayer"
+        android:title="@string/toggle_animate_symbol_layer"/>
+    <item
+        android:id="@+id/action_anim_symbolmanager"
+        android:title="@string/toggle_animate_symbol_manager"/>
+</menu>

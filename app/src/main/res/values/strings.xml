@@ -49,11 +49,14 @@
     <string name="description_snapshot">Example to make a snapshot of the map</string>
     <string name="description_map_snapshotter_bitmap_overlay">Show how to add a bitmap overlay to a Snapshot</string>
     <string name="description_symbol_layer">Manipulate symbols at runtime</string>
+    <string name="description_symbol_anim">symbols anim</string>
 
 
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>
     <string name="toggle_text_font">Toggle text font</string>
+    <string name="toggle_animate_symbol_layer">Animate symbol layer</string>
+    <string name="toggle_animate_symbol_manager">Animate symbol manager</string>
     <string name="description_add_bulk_markers">Add Markers In Bulk to a Map</string>
     <string name="activity_add_bulk_markers">Add Markers In Bulk</string>
     <string-array name="search_type">

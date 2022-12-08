@@ -199,6 +199,19 @@
         </activity>
 
         <activity
+            android:name=".activity.style.SymbolAnimActivity"
+            android:description="@string/description_symbol_anim"
+            android:exported="true"
+            android:label="@string/description_symbol_anim">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_style" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+        <activity
             android:name=".activity.annotation.BulkMarkerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:description="@string/description_add_bulk_markers"
