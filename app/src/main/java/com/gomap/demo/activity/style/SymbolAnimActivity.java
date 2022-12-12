@@ -6,6 +6,7 @@ import static com.gomap.sdk.style.layers.PropertyFactory.iconRotate;
 
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
+import com.gomap.geojson.Feature;
 import com.gomap.geojson.Point;
+import com.gomap.geojson.Polygon;
 import com.gomap.sdk.annotation.Symbol;
 import com.gomap.sdk.annotation.SymbolManager;
 import com.gomap.sdk.annotation.SymbolOptions;
@@ -31,6 +34,12 @@ import com.gomap.sdk.style.layers.SymbolLayer;
 import com.gomap.sdk.style.sources.GeoJsonSource;
 import com.gomap.sdk.utils.BitmapUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
 /**
  * @author dong.jin@g42.ai
  * @description
@@ -42,6 +51,7 @@ public class SymbolAnimActivity extends AppCompatActivity implements OnMapReadyC
     private static final String ID_ICON_AIRPORT = "airport";
     private SymbolManager symbolManager;
     private Symbol symbol;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +94,7 @@ public class SymbolAnimActivity extends AppCompatActivity implements OnMapReadyC
 
     private GeoJsonSource animGeoJsonSource;
     private SymbolLayer animLayer;
+
     private void addAnimLayer(Style style) {
         String layerId = "demo_layer_anim_id";
         String layerSource = "demo_layer_anim_source";
@@ -111,6 +122,25 @@ public class SymbolAnimActivity extends AppCompatActivity implements OnMapReadyC
         final LatLng originalPosition = new LatLng(24.4628, 54.3667);
         final LatLng newPosition = new LatLng(24.4928, 54.3367);
 
+        GeoJsonSource source = mapboxMap.getStyle().getSourceAs("demo_layer_anim_source");
+
+        //查询获取source原有的数据
+        List<Feature> list = source.querySourceFeatures(null);
+        Point point = ((Point) list.get(0).geometry());
+        Log.e("tttt", "old lat: " + point.latitude() + ",old lng = " + point.longitude());
+
+        //解析json获取原有的数据
+        try {
+            JSONObject json = new JSONObject(source.getFeatureCollection());
+            Log.e("tttt", "FeatureCollection: " + json);
+            JSONArray array = json.getJSONArray("coordinates");
+            for (int i = 0; i < array.length(); i += 2) {
+                Log.e("tttt", "old lat: " + array.get(i + 1) + ",old lng:" + array.get(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         ValueAnimator moveSymbol = ValueAnimator.ofFloat(0, 1).setDuration(5000);
         moveSymbol.setInterpolator(new LinearInterpolator());
         moveSymbol.addUpdateListener(animation -> {
@@ -119,7 +149,7 @@ public class SymbolAnimActivity extends AppCompatActivity implements OnMapReadyC
 
             double lat = ((newPosition.getLatitude() - originalPosition.getLatitude()) * fraction) + originalPosition.getLatitude();
             double lng = ((newPosition.getLongitude() - originalPosition.getLongitude()) * fraction) + originalPosition.getLongitude();
-            animGeoJsonSource.setGeoJson(Point.fromLngLat(lng, lat));
+            source.setGeoJson(Point.fromLngLat(lng, lat));
         });
         moveSymbol.start();
     }
