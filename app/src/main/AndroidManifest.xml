@@ -12,7 +12,7 @@
 
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="false"/> <!-- Implied by ACCESS_WIFI_STATE. -->
+        android:required="false" />
 
     <application
         android:name=".GomapApplication"
@@ -22,6 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gomapglnativeandroid">
+        <activity
+            android:name=".MorePointConcentrateActivity"
+            android:exported="false" />
         <activity
             android:name=".FeatureOverviewActivity"
             android:exported="true"
@@ -57,9 +60,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
-
-        <activity android:name=".activity.poi.SearchPoiActivity"
+        <activity
+            android:name=".activity.poi.SearchPoiActivity"
             android:description="@string/description_search_poi_list"
             android:exported="true"
             android:label="@string/activity_search_poi_list">
@@ -69,10 +71,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
-
-
         </activity>
-
         <activity
             android:name=".activity.map.SimpleMapActivity"
             android:description="@string/description_simple_map"
@@ -114,8 +113,8 @@
             android:name=".activity.location.LocationFragmentActivity"
             android:description="@string/description_location_fragment"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:label="@string/activity_location_fragment">
+            android:label="@string/activity_location_fragment"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="@string/category"
                 android:value="@string/category_location" />
@@ -123,7 +122,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity> <!-- Configuration Settings -->
-
         <activity
             android:name=".activity.infowindow.InfoWindowAdapterActivity"
             android:description="@string/description_info_window_adapter"
@@ -136,7 +134,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.annotation.AnimatedSymbolLayerActivity"
             android:description="@string/description_animated_symbollayer"
@@ -149,7 +146,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.snapshot.SnapshotActivity"
             android:description="@string/description_snapshot"
@@ -162,8 +158,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
-        <activity android:name=".activity.navigation.NavigationActivity"
+        <activity
+            android:name=".activity.navigation.NavigationActivity"
             android:description="@string/navigation_demo"
             android:exported="true"
             android:label="@string/navigation">
@@ -171,7 +167,6 @@
                 android:name="@string/category"
                 android:value="@string/category_basic" />
         </activity>
-
         <activity
             android:name=".activity.snapshot.MapSnapshotterBitMapOverlayActivity"
             android:description="@string/description_map_snapshotter_bitmap_overlay"
@@ -184,7 +179,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.style.SymbolLayerActivity"
             android:description="@string/description_symbol_layer"
@@ -197,7 +191,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.style.SymbolAnimActivity"
             android:description="@string/description_symbol_anim"
@@ -210,7 +203,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
         <activity
             android:name=".activity.annotation.BulkMarkerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -224,8 +216,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeatureOverviewActivity" />
         </activity>
-
-
         <activity
             android:name=".activity.annotation.PolylineActivity"
             android:description="@string/description_polyline"
@@ -253,9 +243,6 @@
         <meta-data
             android:name="com.mapbox.MeasureTileDownloadOn"
             android:value="false" />
-			
-			
-
     </application>
 
 </manifest>
