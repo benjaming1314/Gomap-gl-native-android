@@ -257,6 +257,18 @@ public class BulkMarkerActivity extends AppCompatActivity {
                     )
             );
 
+            style.addLayer(
+                    new LineLayer("route-line-layer2", "route-line-source").withProperties(
+                            PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                            PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                            PropertyFactory.lineWidth(2f),
+                            PropertyFactory.lineGapWidth(5f),
+                            PropertyFactory.lineColor(Color.WHITE),
+                            iconRotationAlignment(ICON_ROTATION_ALIGNMENT_MAP),
+                            PropertyFactory.symbolPlacement(Property.SYMBOL_PLACEMENT_LINE)
+                    )
+            );
+
 
             style.addImage("icon_sample_test", BitmapFactory.decodeResource(getResources(),R.drawable.ic_up));
 
