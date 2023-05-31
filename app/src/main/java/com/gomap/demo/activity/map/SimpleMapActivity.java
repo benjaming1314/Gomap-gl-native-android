@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.gomap.demo.R;
+import com.gomap.demo.utils.DeviceUtils;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
@@ -35,6 +36,15 @@ public class SimpleMapActivity extends AppCompatActivity {
     setContentView(R.layout.activity_map_simple);
     mapView = findViewById(R.id.mapView);
     mapView.onCreate(savedInstanceState);
+
+    if (!DeviceUtils.isLocServiceEnable(this)){
+      Toast.makeText(
+              this,
+      "You need open mobile location service",
+              Toast.LENGTH_SHORT
+            ).show();
+      finish();
+    }
     mapView.getMapAsync(mapboxMap -> {
       mapboxMap.setStyle(Style.BASE_DEFAULT, new Style.OnStyleLoaded() {
         @Override

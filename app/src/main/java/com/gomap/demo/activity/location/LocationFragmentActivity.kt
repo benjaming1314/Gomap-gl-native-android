@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gomap.demo.R
+import com.gomap.demo.utils.DeviceUtils
 import com.gomap.sdk.camera.CameraUpdateFactory
 import com.gomap.sdk.geometry.LatLng
 import com.gomap.sdk.location.LocationComponentActivationOptions
@@ -38,6 +39,16 @@ class LocationFragmentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_location_layer_fragment)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+        if (!DeviceUtils.isLocServiceEnable(this)){
+            Toast.makeText(
+                this@LocationFragmentActivity,
+                "You need open mobile location service",
+                Toast.LENGTH_SHORT
+            ).show()
+            finish()
+        }
 
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
             if (savedInstanceState == null) {
@@ -116,6 +127,7 @@ class LocationFragmentActivity : AppCompatActivity() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
             mapView.onCreate(savedInstanceState)
+
             mapView.getMapAsync {
                 mapboxMap = it
                 it.setStyle(Style.getPredefinedStyle("Streets")) { style ->
