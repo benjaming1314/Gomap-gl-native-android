@@ -1,14 +1,21 @@
 package com.gomap.demo.activity.map;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.gomap.demo.R;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
+import com.gomap.sdk.location.LocationComponent;
+import com.gomap.sdk.location.LocationComponentActivationOptions;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.Style;
 import com.gomap.sdk.util.DefaultStyle;
@@ -18,7 +25,7 @@ import com.gomap.sdk.util.DefaultStyle;
  */
 public class SimpleMapActivity extends AppCompatActivity {
 
-  private final LatLng CENTER = new LatLng(24.4628,54.3697);
+  private final LatLng CENTER = new LatLng(24.4628, 54.3697);
 
   private MapView mapView;
 
@@ -29,7 +36,29 @@ public class SimpleMapActivity extends AppCompatActivity {
     mapView = findViewById(R.id.mapView);
     mapView.onCreate(savedInstanceState);
     mapView.getMapAsync(mapboxMap -> {
-      mapboxMap.setStyle(Style.BASE_DEFAULT);
+      mapboxMap.setStyle(Style.BASE_DEFAULT, new Style.OnStyleLoaded() {
+        @Override
+        public void onStyleLoaded(@NonNull Style style) {
+
+          if (ActivityCompat.checkSelfPermission(SimpleMapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SimpleMapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(
+                    SimpleMapActivity.this,
+            "You need to accept location permissions.",
+                    Toast.LENGTH_SHORT
+                    ).show();
+            finish();
+            return;
+          }
+          LocationComponent locationComponent = mapboxMap.getLocationComponent();
+          locationComponent.activateLocationComponent(
+                  LocationComponentActivationOptions
+                          .builder(SimpleMapActivity.this, style)
+                          .useDefaultLocationEngine(true)
+                          .build()
+          );
+          locationComponent.setLocationComponentEnabled(true);
+        }
+      });
 
       CameraPosition cameraPosition = new CameraPosition.Builder()
               .target(CENTER)
