@@ -14,6 +14,8 @@
 
     <string name="activity_routeline">Route-line</string>
     <string name="activity_polyline">Polyline</string>
+    <string name="activity_line">Line Layer</string>
+    <string name="activity_line_change">Line Layer Change</string>
     <string name="activity_camera_animation_types">Animation Types</string>
     <string name="activity_location_fragment">Location Fragment</string>
     <string name="activity_infowindow_adapter">Custom InfoWindow</string>
@@ -41,6 +43,8 @@
 
     <string name="description_camera_animation_types">Showcase the different animation types</string>
     <string name="description_polyline">Add a polyline to a map</string>
+    <string name="description_line">Add a line to a map</string>
+    <string name="description_line_change">line change</string>
     <string name="description_routeline">Add a route to a map</string>
     <string name="description_location_fragment">Uses LocationComponent in a Fragment</string>
     <string name="description_simple_map">Shows a simple map</string>

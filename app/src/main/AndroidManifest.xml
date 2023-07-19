@@ -229,6 +229,32 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
 
+        <activity
+            android:name=".activity.annotation.linemanager.LineActivity"
+            android:description="@string/description_line"
+            android:exported="true"
+            android:label="@string/activity_line">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
+        <activity
+            android:name=".activity.annotation.linemanager.LineChangeActivity"
+            android:description="@string/description_line_change"
+            android:exported="true"
+            android:label="@string/activity_line_change">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+
         <meta-data
             android:name="com.mapbox.TestEventsServer"
             android:value="api-events-staging.tilestream.net" />
