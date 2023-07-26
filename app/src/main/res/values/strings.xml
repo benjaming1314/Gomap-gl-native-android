@@ -23,6 +23,11 @@
     <string name="activity_snapshot">Snapshot Activity</string>
     <string name="activity_map_snapshotter_bitmap_overlay">Map Snapshot with bitmap overlay</string>
     <string name="activity_symbol_layer">Symbols</string>
+    <string name="title_symbol_change">Change Symbol</string>
+    <string name="title_fill">Fill</string>
+    <string name="title_fill_change">Change Fill</string>
+    <string name="title_circle">Circle</string>
+    <string name="title_symbol_press">Press for Symbol</string>
 
     <string name="category_annotation">Annotation</string>
     <string name="category_poi">Poi</string>
@@ -54,7 +59,10 @@
     <string name="description_map_snapshotter_bitmap_overlay">Show how to add a bitmap overlay to a Snapshot</string>
     <string name="description_symbol_layer">Manipulate symbols at runtime</string>
     <string name="description_symbol_anim">symbols anim</string>
-
+    <string name="description_symbol_press">Show a symbol by pressing the map</string>
+    <string name="description_fill">Show fills on a map</string>
+    <string name="description_fill_change">Show changing a fill on a map</string>
+    <string name="description_circle">Show circles on a map</string>
 
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>

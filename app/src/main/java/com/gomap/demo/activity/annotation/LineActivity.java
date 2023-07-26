@@ -1,4 +1,4 @@
-package com.gomap.demo.activity.annotation.linemanager;
+package com.gomap.demo.activity.annotation;
 
 import android.graphics.Color;
 import android.os.Bundle;

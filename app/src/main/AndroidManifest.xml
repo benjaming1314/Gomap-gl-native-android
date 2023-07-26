@@ -22,9 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gomapglnativeandroid">
-        <activity
-            android:name=".MorePointConcentrateActivity"
-            android:exported="false" />
+
         <activity
             android:name=".FeatureOverviewActivity"
             android:exported="true"
@@ -230,7 +228,7 @@
         </activity>
 
         <activity
-            android:name=".activity.annotation.linemanager.LineActivity"
+            android:name=".activity.annotation.LineActivity"
             android:description="@string/description_line"
             android:exported="true"
             android:label="@string/activity_line">
@@ -243,10 +241,54 @@
         </activity>
 
         <activity
-            android:name=".activity.annotation.linemanager.LineChangeActivity"
+            android:name=".activity.annotation.LineChangeActivity"
             android:description="@string/description_line_change"
             android:exported="true"
             android:label="@string/activity_line_change">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+        <activity
+            android:name=".activity.annotation.CircleActivity"
+            android:description="@string/description_circle"
+            android:label="@string/title_circle">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+        <activity
+            android:name=".activity.annotation.FillActivity"
+            android:description="@string/description_fill"
+            android:label="@string/title_fill">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+        <activity
+            android:name=".activity.annotation.FillChangeActivity"
+            android:description="@string/description_fill_change"
+            android:label="@string/title_fill_change">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_annotation" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+        <activity
+            android:name=".activity.annotation.PressForSymbolActivity"
+            android:description="@string/description_symbol_press"
+            android:label="@string/title_symbol_press">
             <meta-data
                 android:name="@string/category"
                 android:value="@string/category_annotation" />

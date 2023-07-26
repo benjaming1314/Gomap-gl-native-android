@@ -28,6 +28,7 @@ import java.util.ArrayList;
  * Shows how to use a OnMapClickListener and a OnMapLongClickListener
  * </p>
  */
+@Deprecated
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class PressForMarkerActivity extends AppCompatActivity {
 

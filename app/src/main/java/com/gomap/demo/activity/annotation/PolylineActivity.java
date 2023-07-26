@@ -28,6 +28,7 @@ import java.util.List;
  * Shows how to add and remove polylines.
  * </p>
  */
+@Deprecated
 public class PolylineActivity extends AppCompatActivity {
 
   private static final String STATE_POLYLINE_OPTIONS = "polylineOptions";
