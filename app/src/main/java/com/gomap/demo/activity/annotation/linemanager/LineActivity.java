@@ -2,10 +2,13 @@ package com.gomap.demo.activity.annotation.linemanager;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.gomap.demo.R;
 import com.gomap.demo.utils.Utils;
+import com.gomap.sdk.annotation.Line;
 import com.gomap.sdk.annotation.LineManager;
 import com.gomap.sdk.annotation.LineOptions;
 import com.gomap.sdk.camera.CameraUpdateFactory;
@@ -96,6 +99,24 @@ public class LineActivity extends AppCompatActivity {
         (random.nextDouble() * -360.0) + 180.0));
     }
     return latLngs;
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_line, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == R.id.menu_action_draggable) {
+      for (int i = 0; i < lineManager.getAnnotations().size(); i++) {
+        Line line = lineManager.getAnnotations().get(i);
+        line.setDraggable(!line.isDraggable());
+      }
+      return true;
+    }
+    return false;
   }
 
   @Override
