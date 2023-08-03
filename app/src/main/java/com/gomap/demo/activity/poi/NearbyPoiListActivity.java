@@ -13,13 +13,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.gomap.demo.R;
-import com.gomap.demo.model.HttpResponse;
-import com.gomap.demo.model.MoreResponse;
-import com.gomap.demo.model.PoiModel;
-import com.gomap.demo.utils.DeviceUtils;
+import com.gomap.demo.utils.PreferenceStorageUtils;
 import com.gomap.demo.utils.ScreenUtils;
 import com.gomap.geojson.Point;
 import com.gomap.geojson.Polygon;
+import com.gomap.plugin.api.GomapGeocoding;
+import com.gomap.plugin.api.model.HttpResponse;
+import com.gomap.plugin.api.model.LngLatBean;
+import com.gomap.plugin.api.model.MoreResponse;
+import com.gomap.plugin.api.model.PoiModel;
+import com.gomap.plugin.api.model.SearchRequestEntity;
 import com.gomap.sdk.annotations.Marker;
 import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
@@ -35,7 +38,7 @@ import com.gomap.sdk.location.permissions.PermissionsManager;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
-import com.gomap.sdk.poi.PoiService;
+import com.gomap.sdk.util.DeviceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,6 +48,10 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NearbyPoiListActivity extends AppCompatActivity {
 
@@ -58,9 +65,9 @@ public class NearbyPoiListActivity extends AppCompatActivity {
     private final LatLng CENTER = new LatLng(24.4628, 54.3697);
 
     private static String STATE_MARKER_LIST = "markerList";
-
-
     private View search;
+
+    private GomapGeocoding.Builder geocoderBuilder;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -110,32 +117,62 @@ public class NearbyPoiListActivity extends AppCompatActivity {
             }
         });
 
+        String apiKey = PreferenceStorageUtils.INSTANCE.getApiKeyData("");
+        geocoderBuilder = GomapGeocoding.builder();
+        geocoderBuilder.apiKey(apiKey);
+        geocoderBuilder.clientid(DeviceUtils.getAndroidId(getApplication()));
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LatLng center = findCenter();
                 Location location = mapboxMap.getLocationComponent().getLastKnownLocation();
-                PoiService.getInstance().requestNearbyPoi(new LatLng(location),center, DeviceUtils.getAndroidId(NearbyPoiListActivity.this),500, new PoiService.NetCallBack() {
-                    @Override
-                    public void onCallBack(String response) {
-                        handlePoiResult(response);
 
+                SearchRequestEntity searchRequestEntity = new SearchRequestEntity();
+                searchRequestEntity.setImei(DeviceUtils.getAndroidId(getApplication()));
+
+                LngLatBean lngLatBean = new LngLatBean();
+                lngLatBean.setLat(location.getLatitude());
+                lngLatBean.setLng(location.getLongitude());
+                searchRequestEntity.setLocation(lngLatBean);
+
+                LngLatBean centerBean = new LngLatBean();
+                centerBean.setLng(center.getLongitude());
+                centerBean.setLat(center.getLatitude());
+                searchRequestEntity.setCenter(centerBean);
+                searchRequestEntity.setRadius(500L);
+                GomapGeocoding gomapGeocoding = geocoderBuilder.searchRequestEntity(searchRequestEntity).build();
+                gomapGeocoding.enableDebug(true);
+                gomapGeocoding.enqueueSearchNearByCall(new Callback<HttpResponse<MoreResponse<PoiModel>>>() {
+                    @Override
+                    public void onResponse(Call<HttpResponse<MoreResponse<PoiModel>>> call, Response<HttpResponse<MoreResponse<PoiModel>>> response) {
+                        if (response.body().isSuccess()){
+                            handlePoiResult(response.body().getData().getList());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<HttpResponse<MoreResponse<PoiModel>>> call, Throwable t) {
                     }
                 });
+
+//                PoiService.getInstance().requestNearbyPoi(new LatLng(location),center, DeviceUtils.getAndroidId(NearbyPoiListActivity.this),500, new PoiService.NetCallBack() {
+//                    @Override
+//                    public void onCallBack(String response) {
+//                        handlePoiResult(response);
+//
+//                    }
+//                });
             }
         });
     }
 
-    private void handlePoiResult(String response) {
-        Type type = new TypeToken<HttpResponse<MoreResponse<PoiModel>>>() {
-        }.getType();
-        HttpResponse<MoreResponse<PoiModel>> httpResponse = new Gson().fromJson(response, type);
+    private void handlePoiResult(List<PoiModel> list ) {
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mapboxMap.clear();
-                List<PoiModel> list = httpResponse.getData().getList();
 
                 if (list != null && !list.isEmpty()) {
                     ArrayList<Point> listPoint = new ArrayList<Point>();
@@ -147,9 +184,9 @@ public class NearbyPoiListActivity extends AppCompatActivity {
                             list) {
                         marker = addMarker(poiModel);
 
-                        builder.include(new LatLng(Double.parseDouble(poiModel.getLat()), Double.parseDouble(poiModel.getLng())));
+                        builder.include(new LatLng(Double.parseDouble(poiModel.lat()), Double.parseDouble(poiModel.lng())));
 
-                        listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.getLng()), Double.parseDouble(poiModel.getLat())));
+                        listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.lng()), Double.parseDouble(poiModel.lat())));
                     }
 //                                    if (marker != null){
 //                                        mapboxMap.selectMarker(marker);
@@ -241,11 +278,11 @@ public class NearbyPoiListActivity extends AppCompatActivity {
 
     private Marker addMarker(PoiModel poiModel) {
 
-        String title = poiModel.getName();
-        String snippet = poiModel.getAddress();
+        String title = poiModel.name();
+        String snippet = poiModel.address();
 
         MarkerOptions marker = new MarkerOptions()
-                .position(new LatLng(Double.parseDouble(poiModel.getLat()),Double.parseDouble(poiModel.getLng())))
+                .position(new LatLng(Double.parseDouble(poiModel.lat()),Double.parseDouble(poiModel.lng())))
                 .title(title)
                 .snippet(snippet);
 

@@ -14,8 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.demo.R;
+import com.gomap.demo.utils.PreferenceStorageUtils;
 import com.gomap.geojson.Feature;
 import com.gomap.geojson.Point;
+import com.gomap.plugin.api.GomapGeocoding;
+import com.gomap.plugin.api.GomapRoute;
 import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.annotations.Polyline;
 import com.gomap.sdk.annotations.PolylineOptions;
@@ -25,19 +28,23 @@ import com.gomap.sdk.geometry.LatLng;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
-import com.gomap.sdk.route.DirectionService;
-import com.gomap.sdk.route.DirectionServiceCallBack;
 import com.gomap.sdk.route.model.DirectionsResponse;
 import com.gomap.sdk.route.model.DirectionsRoute;
+import com.gomap.sdk.route.model.RouteType;
 import com.gomap.sdk.style.layers.PropertyFactory;
 import com.gomap.sdk.style.layers.SymbolLayer;
 import com.gomap.sdk.style.sources.GeoJsonSource;
+import com.gomap.sdk.util.DeviceUtils;
 import com.gomap.sdk.utils.StringUtils;
 import com.gomap.sdk.utils.ThreadUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RouteLineActivity extends AppCompatActivity {
 
@@ -58,6 +65,8 @@ public class RouteLineActivity extends AppCompatActivity {
 
   private MapView mapView;
   private MapboxMap mapboxMap;
+
+  private GomapRoute.Builder routeBuilder ;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +140,8 @@ public class RouteLineActivity extends AppCompatActivity {
       }
     });
 
+    routeBuilder = GomapRoute.builder();
+
   }
   private void initSymbolLayer(Style style) {
     if (style.getLayer("site-layer") == null){
@@ -166,12 +177,27 @@ public class RouteLineActivity extends AppCompatActivity {
       pointList.add(Point.fromLngLat(marker.getLongitude(),marker.getLatitude()));
     }
 
-    DirectionService.getInstance().requestRouteDirection(pointList, new DirectionServiceCallBack() {
+    GomapRoute gomapRoute = routeBuilder.routeType(RouteType.driving)
+            .pointList(pointList)
+            .build();
+
+    gomapRoute.enqueueCall(new Callback<DirectionsResponse>() {
       @Override
-      public void onCallBack(DirectionsResponse directionsResponse) {
-        drawLine(directionsResponse);
+      public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+        drawLine(response.body());
+      }
+
+      @Override
+      public void onFailure(Call<DirectionsResponse> call, Throwable t) {
       }
     });
+
+//    DirectionService.getInstance().requestRouteDirection(pointList, new DirectionServiceCallBack() {
+//      @Override
+//      public void onCallBack(DirectionsResponse directionsResponse) {
+//        drawLine(directionsResponse);
+//      }
+//    });
 
   }
   //

@@ -28,6 +28,9 @@
     <string name="title_fill_change">Change Fill</string>
     <string name="title_circle">Circle</string>
     <string name="title_symbol_press">Press for Symbol</string>
+    <string name="title_places_autocomplete">Places Autocomplete</string>
+    <string name="title_places_autocomplete_fragment">Places Autocomplete Fragment</string>
+    <string name="title_place_picker">Place picker</string>
 
     <string name="category_annotation">Annotation</string>
     <string name="category_poi">Poi</string>
@@ -63,6 +66,9 @@
     <string name="description_fill">Show fills on a map</string>
     <string name="description_fill_change">Show changing a fill on a map</string>
     <string name="description_circle">Show circles on a map</string>
+    <string name="description_autocomplete">Launch the autocomplete activity.</string>
+    <string name="description_autocomplete_fragment">Launch the autocomplete fragment inside an activity</string>
+    <string name="description_place_picker">Launch the place picker activity and receive result</string>
 
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>
@@ -76,5 +82,13 @@
         <item>Radius</item>
         <item>Type</item>
     </string-array>
+
+
+    <!-- Place picker -->
+    <string name="detailed_description_place_picker">Example shows how to launch the Place Picker using the Floating action button and receiving a result in onActivityResult.</string>
+    <string name="reverse_geocoding_enabled">Reverse geocoding enabled</string>
+    <string name="reverse_geocoding_disabled">Reverse geocoding disabled</string>
+    <string name="user_location_button_enabled">User location button enabled</string>
+    <string name="user_location_button_disabled">User location button disabled</string>
 
 </resources>

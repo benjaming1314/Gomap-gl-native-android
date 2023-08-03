@@ -14,17 +14,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.DeviceUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gomap.demo.R;
 import com.gomap.demo.adapter.FeatureAdapter;
 import com.gomap.demo.adapter.FeatureSectionAdapter;
 import com.gomap.demo.model.Feature;
 import com.gomap.demo.utils.ItemClickSupport;
+import com.gomap.demo.utils.PreferenceStorageUtils;
+import com.gomap.plugin.api.GomapApiKey;
+import com.gomap.plugin.api.model.ApiKeyInfo;
+import com.gomap.plugin.api.model.HttpResponse;
+import com.gomap.sdk.log.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -66,6 +78,33 @@ public class FeatureOverviewActivity extends AppCompatActivity {
       features = savedInstanceState.getParcelableArrayList(KEY_STATE_FEATURES);
       onFeaturesLoaded(features);
     }
+
+    loadApikey();
+  }
+
+
+  private void loadApikey() {
+    Map<String,Object> map = new HashMap<>();
+    map.put("clientid", DeviceUtils.getAndroidID());
+    GomapApiKey.builder()
+            .apiKey("")
+            .map(map)
+            .build()
+            .enqueueCall(new Callback<HttpResponse<ApiKeyInfo>>() {
+              @Override
+              public void onResponse(Call<HttpResponse<ApiKeyInfo>> call, Response<HttpResponse<ApiKeyInfo>> response) {
+                if (response.body().isSuccess()){
+                  PreferenceStorageUtils.INSTANCE.saveApiKeyData(response.body().getData().apikey());
+                }
+              }
+
+              @Override
+              public void onFailure(Call<HttpResponse<ApiKeyInfo>> call, Throwable t) {
+                Logger.i("apikey",t.getMessage());
+                ToastUtils.showShort("get apikey failed");
+              }
+            });
+
   }
 
   private void loadFeatures() {

@@ -17,13 +17,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gomap.demo.R;
-import com.gomap.demo.model.HttpResponse;
-import com.gomap.demo.model.MoreResponse;
-import com.gomap.demo.model.PoiModel;
-import com.gomap.demo.utils.DeviceUtils;
+import com.gomap.demo.utils.PreferenceStorageUtils;
 import com.gomap.demo.utils.ScreenUtils;
 import com.gomap.geojson.Point;
 import com.gomap.geojson.Polygon;
+import com.gomap.plugin.api.GomapGeocoding;
+import com.gomap.plugin.api.model.HttpResponse;
+import com.gomap.plugin.api.model.LngLatBean;
+import com.gomap.plugin.api.model.MoreResponse;
+import com.gomap.plugin.api.model.PoiModel;
+import com.gomap.plugin.api.model.SearchRequestEntity;
 import com.gomap.sdk.annotations.Marker;
 import com.gomap.sdk.annotations.MarkerOptions;
 import com.gomap.sdk.camera.CameraPosition;
@@ -38,7 +41,7 @@ import com.gomap.sdk.location.permissions.PermissionsManager;
 import com.gomap.sdk.maps.MapView;
 import com.gomap.sdk.maps.MapboxMap;
 import com.gomap.sdk.maps.Style;
-import com.gomap.sdk.poi.PoiService;
+import com.gomap.sdk.util.DeviceUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,7 +50,12 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchPoiActivity extends AppCompatActivity {
 
@@ -62,6 +70,7 @@ public class SearchPoiActivity extends AppCompatActivity {
     private EditText edtPoi;
 
     private Spinner spinner;
+    private GomapGeocoding.Builder geocoderBuilder;
 
     private int searchType = 0;//0 是 keyword ,1 radius 2 type
 
@@ -115,6 +124,10 @@ public class SearchPoiActivity extends AppCompatActivity {
             }
         });
 
+        String apiKey = PreferenceStorageUtils.INSTANCE.getApiKeyData("");
+        geocoderBuilder = GomapGeocoding.builder();
+        geocoderBuilder.apiKey(apiKey);
+        geocoderBuilder.clientid(DeviceUtils.getAndroidId(getApplication()));
 
         findViewById(R.id.txt_search_poi).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,32 +142,93 @@ public class SearchPoiActivity extends AppCompatActivity {
 
                 Location location = mapboxMap.getLocationComponent().getLastKnownLocation();
 
+                geocoderBuilder.build();
+
+                SearchRequestEntity searchRequestEntity = new SearchRequestEntity();
+                searchRequestEntity.setName(keyword);
+                searchRequestEntity.setImei(DeviceUtils.getAndroidId(getApplication()));
+
+                LngLatBean lngLatBean = new LngLatBean();
+                lngLatBean.setLat(location.getLatitude());
+                lngLatBean.setLng(location.getLongitude());
+                searchRequestEntity.setLocation(lngLatBean);
 
                 if (searchType == 0){
-                    PoiService.getInstance().requestPoiAsInputKeyword(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),new PoiService.NetCallBack(){
+                    GomapGeocoding gomapGeocoding = geocoderBuilder.searchRequestEntity(searchRequestEntity).build();
+                    gomapGeocoding.enableDebug(true);
+                    gomapGeocoding.enqueueCall(new Callback<HttpResponse<MoreResponse<PoiModel>>>() {
+                        @Override
+                        public void onResponse(Call<HttpResponse<MoreResponse<PoiModel>>> call, Response<HttpResponse<MoreResponse<PoiModel>>> response) {
+                            if (response.body().isSuccess()){
+                                handlePoiResult(response.body().getData().getList());
+                            }
+                        }
 
                         @Override
-                        public void onCallBack(String response) {
-                            handlePoiResult(response);
+                        public void onFailure(Call<HttpResponse<MoreResponse<PoiModel>>> call, Throwable t) {
+
                         }
                     });
+//                    PoiService.getInstance().requestPoiAsInputKeyword(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),new PoiService.NetCallBack(){
+//
+//                        @Override
+//                        public void onCallBack(String response) {
+//                            handlePoiResult(response);
+//                        }
+//                    });
                 }else if (searchType == 1){
-                    PoiService.getInstance().requestPoiAsRadius(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),findCenter(),15000,new PoiService.NetCallBack(){
+                    LngLatBean center = new LngLatBean();
+                    center.setLng(findCenter().getLongitude());
+                    center.setLat(findCenter().getLatitude());
+                    searchRequestEntity.setCenter(center);
+                    searchRequestEntity.setRadius(15000L);
+                    GomapGeocoding gomapGeocoding = geocoderBuilder.searchRequestEntity(searchRequestEntity).build();
+                    gomapGeocoding.enableDebug(true);
+                    gomapGeocoding.enqueueSearchWeightCall(new Callback<HttpResponse<MoreResponse<PoiModel>>>() {
+                        @Override
+                        public void onResponse(Call<HttpResponse<MoreResponse<PoiModel>>> call, Response<HttpResponse<MoreResponse<PoiModel>>> response) {
+                            if (response.body().isSuccess()){
+                                handlePoiResult(response.body().getData().getList());
+                            }
+                        }
 
                         @Override
-                        public void onCallBack(String response) {
-                            handlePoiResult(response);
+                        public void onFailure(Call<HttpResponse<MoreResponse<PoiModel>>> call, Throwable t) {
                         }
                     });
+
+//                    PoiService.getInstance().requestPoiAsRadius(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),findCenter(),15000,new PoiService.NetCallBack(){
+//
+//                        @Override
+//                        public void onCallBack(String response) {
+//                            handlePoiResult(response);
+//                        }
+//                    });
                 }else {
                     String[] fields = new String[]{"synonym","bank"};
-                    PoiService.getInstance().requestPoiAsType(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),fields,new PoiService.NetCallBack(){
+                    searchRequestEntity.setFields(Arrays.asList(fields));
+                    GomapGeocoding gomapGeocoding = geocoderBuilder.searchRequestEntity(searchRequestEntity).build();
+                    gomapGeocoding.enableDebug(true);
+                    gomapGeocoding.enqueueSearchWeightCall(new Callback<HttpResponse<MoreResponse<PoiModel>>>() {
+                        @Override
+                        public void onResponse(Call<HttpResponse<MoreResponse<PoiModel>>> call, Response<HttpResponse<MoreResponse<PoiModel>>> response) {
+                            if (response.body().isSuccess()){
+                                handlePoiResult(response.body().getData().getList());
+                            }
+                        }
 
                         @Override
-                        public void onCallBack(String response) {
-                            handlePoiResult(response);
+                        public void onFailure(Call<HttpResponse<MoreResponse<PoiModel>>> call, Throwable t) {
                         }
                     });
+
+//                    PoiService.getInstance().requestPoiAsType(keyword,DeviceUtils.getAndroidId(SearchPoiActivity.this),new LatLng(location),fields,new PoiService.NetCallBack(){
+//
+//                        @Override
+//                        public void onCallBack(String response) {
+//                            handlePoiResult(response);
+//                        }
+//                    });
                 }
 
             }
@@ -168,27 +242,23 @@ public class SearchPoiActivity extends AppCompatActivity {
         return mapboxMap.getProjection().fromScreenLocation(new PointF(width / 2, height / 2));
     }
 
-    private void handlePoiResult(String response) {
-        Type type = new TypeToken<HttpResponse<MoreResponse<PoiModel>>>() {
-        }.getType();
-        HttpResponse<MoreResponse<PoiModel>> httpResponse = new Gson().fromJson(response, type);
+    private void handlePoiResult(List<PoiModel> list) {
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mapboxMap.clear();
-                List<PoiModel> list = httpResponse.getData().getList();
 
                 if (list != null && !list.isEmpty()) {
                     ArrayList<Point> listPoint = new ArrayList<Point>();
                     Marker marker = null;
                     for (PoiModel poiModel :
                             list) {
-                        String lat = poiModel.getLat();
+                        String lat = poiModel.lat();
                         if(lat != null && lat.length() > 0){
                             marker = addMarker(poiModel);
 
-                            listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.getLng()), Double.parseDouble(poiModel.getLat())));
+                            listPoint.add(Point.fromLngLat(Double.parseDouble(poiModel.lng()), Double.parseDouble(poiModel.lat())));
                         }
 
                     }
@@ -253,11 +323,11 @@ public class SearchPoiActivity extends AppCompatActivity {
 
     private Marker addMarker(PoiModel poiModel) {
 
-        String title = poiModel.getName();
-        String snippet = poiModel.getAddress();
+        String title = poiModel.name();
+        String snippet = poiModel.address();
 
         MarkerOptions marker = new MarkerOptions()
-                .position(new LatLng(Double.parseDouble(poiModel.getLat()),Double.parseDouble(poiModel.getLng())))
+                .position(new LatLng(Double.parseDouble(poiModel.lat()),Double.parseDouble(poiModel.lng())))
                 .title(title)
                 .snippet(snippet);
 
