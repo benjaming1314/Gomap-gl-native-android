@@ -31,6 +31,7 @@
     <string name="title_places_autocomplete">Places Autocomplete</string>
     <string name="title_places_autocomplete_fragment">Places Autocomplete Fragment</string>
     <string name="title_place_picker">Place picker</string>
+    <string name="activity_heatmaplayer">Heatmap layer</string>
 
     <string name="category_annotation">Annotation</string>
     <string name="category_poi">Poi</string>
@@ -69,6 +70,7 @@
     <string name="description_autocomplete">Launch the autocomplete activity.</string>
     <string name="description_autocomplete_fragment">Launch the autocomplete fragment inside an activity</string>
     <string name="description_place_picker">Launch the place picker activity and receive result</string>
+    <string name="description_heatmaplayer">Use HeatmapLayer to visualise earthquakes</string>
 
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>
