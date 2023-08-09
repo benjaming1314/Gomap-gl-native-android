@@ -64,6 +64,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
             //模拟导航
             mapboxMap.navigationControl.startSimulationNavigation()
             navigationUIController!!.showNaviView()
+            navigationUIController?.showNaviBottomVisible(false)
             llWrapper.visibility = View.GONE
         }
 
