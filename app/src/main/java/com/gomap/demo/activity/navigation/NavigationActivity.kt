@@ -1,14 +1,21 @@
 package com.gomap.demo.activity.navigation
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.ToastUtils
 import com.gomap.demo.R
+import com.gomap.demo.activity.location.LocationFragmentActivity
 import com.gomap.demo.activity.navigation.parse.ParseUtils
 import com.gomap.demo.utils.ScreenUtil
 import com.gomap.maps.navigation.NavigationUIController
@@ -17,6 +24,15 @@ import com.gomap.maps.navigation.model.NavigationResult
 import com.gomap.sdk.camera.CameraPosition
 import com.gomap.sdk.camera.CameraUpdateFactory
 import com.gomap.sdk.geometry.LatLng
+import com.gomap.sdk.location.LocationComponentActivationOptions
+import com.gomap.sdk.location.LocationComponentOptions
+import com.gomap.sdk.location.engine.LocationEngineCallback
+import com.gomap.sdk.location.engine.LocationEngineRequest
+import com.gomap.sdk.location.engine.LocationEngineResult
+import com.gomap.sdk.location.modes.CameraMode
+import com.gomap.sdk.location.modes.RenderMode
+import com.gomap.sdk.location.permissions.PermissionsListener
+import com.gomap.sdk.location.permissions.PermissionsManager
 import com.gomap.sdk.maps.MapView
 import com.gomap.sdk.maps.MapboxMap
 import com.gomap.sdk.maps.Style
@@ -29,7 +45,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndListener,
     NavigationControl.ReRoutePlanListener, NavigationControl.RoutePlanListener,
-    NavigationControl.ShowGuideInfoListener {
+    NavigationControl.ShowGuideInfoListener,LocationEngineCallback<LocationEngineResult>  {
 
     private lateinit var startRoutePlanning: Button
     private lateinit var cancelRoutePlanning: Button
@@ -54,6 +70,28 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
+
+
+        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+        } else {
+          var permissionsManager = PermissionsManager(object : PermissionsListener {
+                override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
+                    Toast.makeText(
+                        this@NavigationActivity,
+                        "You need to accept location permissions.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onPermissionResult(granted: Boolean) {
+                    if (granted) {
+                    } else {
+                        finish()
+                    }
+                }
+            })
+            permissionsManager.requestLocationPermissions(this)
+        }
 
         startRoutePlanning = findViewById(R.id.btn_route)
         cancelRoutePlanning = findViewById(R.id.btn_route_cancel)
@@ -146,9 +184,71 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                 }
 
                 initNaviConfig()
+                activateLocationComponent(it)
+
 
             }
         }
+    }
+
+    private fun activateLocationComponent(style:Style) {
+        //初始化定位组件
+        val component = mapboxMap.locationComponent
+
+        val locationComponentOptions = LocationComponentOptions.builder(this)
+            .foregroundDrawable(R.drawable.mapbox_user_icon)
+            .backgroundDrawable(R.drawable.mapbox_user_stroke_icon)
+            .foregroundDrawableStale(R.drawable.mapbox_user_icon_stale)
+            .backgroundDrawableStale(R.drawable.mapbox_user_stroke_icon)
+            .bearingDrawable(R.drawable.mapbox_user_bearing_icon)
+            .gpsDrawable(R.drawable.mapbox_user_puck_icon)
+            .pulseEnabled(true)
+            .pulseMaxRadius(50f)
+            .minZoomIconScale(0.6f)
+            .maxZoomIconScale(1.0f)
+            .pulseColor(Color.parseColor("#4B7DF6"))
+            .build()
+
+        component.activateLocationComponent(
+            LocationComponentActivationOptions
+                .builder(this, style)
+                .locationComponentOptions(locationComponentOptions)
+                .useDefaultLocationEngine(true)
+                .locationEngineRequest(
+                    LocationEngineRequest.Builder(750)
+                        .setFastestInterval(750)
+                        .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
+                        .build())
+                .build()
+        )
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        component.isLocationComponentEnabled = true
+
+        component.cameraMode = CameraMode.TRACKING
+        component.renderMode = RenderMode.COMPASS
+        component.locationEngine?.getLastLocation(this)
+
+        //位置更新
+        component.addLocationChangeListener(this)
+    }
+
+    override fun onSuccess(result: LocationEngineResult?) {
+        if (result != null){
+            ToastUtils.showShort("lat:"+result.lastLocation?.latitude?.toString() + " lon:" + result.lastLocation?.longitude)
+        }
+    }
+
+    override fun onFailure(exception: java.lang.Exception) {
     }
 
     private fun initNaviConfig() {

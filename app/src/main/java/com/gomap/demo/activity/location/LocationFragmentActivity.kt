@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.blankj.utilcode.util.ToastUtils
 import com.gomap.demo.R
 import com.gomap.demo.utils.DeviceUtils
 import com.gomap.sdk.camera.CameraUpdateFactory
@@ -165,6 +166,19 @@ class LocationFragmentActivity : AppCompatActivity() {
                     component.cameraMode = CameraMode.TRACKING
                     component.renderMode = RenderMode.COMPASS
                     component.locationEngine?.getLastLocation(this)
+
+                    //位置更新
+                    component.addLocationChangeListener(object :LocationEngineCallback<LocationEngineResult> {
+                        override fun onSuccess(result: LocationEngineResult?) {
+                            if (result != null){
+                                ToastUtils.showShort("lat:"+result.lastLocation?.latitude?.toString() + " lon:" + result.lastLocation?.longitude)
+                            }
+                        }
+
+                        override fun onFailure(exception: java.lang.Exception) {
+                        }
+
+                    })
                 }
             }
         }
