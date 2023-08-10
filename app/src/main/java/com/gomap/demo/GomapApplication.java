@@ -16,11 +16,18 @@ import com.gomap.sdk.WellKnownTileServer;
  */
 public class GomapApplication extends Application {
 
+
+  private static GomapApplication application ;
+
   @Override
   public void onCreate() {
     super.onCreate();
-
+    application = this;
     initializeMap();
+  }
+
+  public static GomapApplication getInstance(){
+    return application;
   }
 
 

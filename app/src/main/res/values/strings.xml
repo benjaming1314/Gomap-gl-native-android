@@ -32,6 +32,10 @@
     <string name="title_places_autocomplete_fragment">Places Autocomplete Fragment</string>
     <string name="title_place_picker">Place picker</string>
     <string name="activity_heatmaplayer">Heatmap layer</string>
+    <string name="activity_basic_location_pulsing_circle">Basic Pulsing Circle Activity</string>
+    <string name="activity_customized_location_pulsing_circle">Customized Pulsing Circle Activity</string>
+    <string name="activity_location_modes">Location Modes Activity</string>
+    <string name="activity_location_map_change">Simple Location Layer</string>
 
     <string name="category_annotation">Annotation</string>
     <string name="category_poi">Poi</string>
@@ -71,6 +75,11 @@
     <string name="description_autocomplete_fragment">Launch the autocomplete fragment inside an activity</string>
     <string name="description_place_picker">Launch the place picker activity and receive result</string>
     <string name="description_heatmaplayer">Use HeatmapLayer to visualise earthquakes</string>
+    <string name="description_location_basic_pulsing_circle">Display the LocationComponent\'s default pulsing circle</string>
+    <string name="description_location_customized_pulsing_circle">Display and customize the LocationComponent\'s pulsing circle</string>
+    <string name="description_location_modes">Showcases location render and tracking modes</string>
+    <string name="description_location_map_change">Change map\'s style while location is displayed</string>
+
 
     <string name="toggle_text_size">Toggle text size</string>
     <string name="toggle_text_field_contents">Toggle text field contents</string>

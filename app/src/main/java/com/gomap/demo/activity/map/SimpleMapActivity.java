@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.gomap.demo.R;
 import com.gomap.demo.utils.DeviceUtils;
+import com.gomap.demo.utils.ScreenUtil;
 import com.gomap.sdk.camera.CameraPosition;
 import com.gomap.sdk.camera.CameraUpdateFactory;
 import com.gomap.sdk.geometry.LatLng;
@@ -77,6 +78,15 @@ public class SimpleMapActivity extends AppCompatActivity {
               .tilt(0)
               .build();
       mapboxMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+      mapboxMap.getUiSettings().setLogoMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(50),ScreenUtil.dp2px(60));
+      mapboxMap.getUiSettings().setMapScaleViewMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(50),ScreenUtil.dp2px(80));
+
+      mapboxMap.getUiSettings().setCompassMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(10),ScreenUtil.dp2px(50));
+      mapboxMap.getUiSettings().setChangeStyleViewMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(10),ScreenUtil.dp2px(120));
+      mapboxMap.getUiSettings().setVoiceSwitchViewMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(10),ScreenUtil.dp2px(190));
+      mapboxMap.getUiSettings().setFindMeViewMargins(ScreenUtil.dp2px(20),ScreenUtil.dp2px(50),ScreenUtil.dp2px(10),ScreenUtil.dp2px(60));
+
     });
   }
 
