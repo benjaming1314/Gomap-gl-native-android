@@ -6,8 +6,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.gomap.demo.R
 import com.gomap.demo.activity.navigation.parse.ParseUtils
+import com.gomap.demo.utils.ScreenUtil
 import com.gomap.maps.navigation.NavigationUIController
 import com.gomap.maps.navigation.listener.OnNavListener
 import com.gomap.maps.navigation.model.NavigationResult
@@ -20,7 +22,10 @@ import com.gomap.sdk.maps.Style
 import com.gomap.sdk.navigation.FrameWorkApiProxy
 import com.gomap.sdk.navigation.NavigationControl
 import com.gomap.sdk.navigation.bean.*
+import com.gomap.sdk.utils.BitmapUtils
+import com.gomap.sdk.utils.ScreenUtils
 import com.gomap.sdk.utils.ThreadUtils
+import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndListener,
     NavigationControl.ReRoutePlanListener, NavigationControl.RoutePlanListener,
@@ -33,6 +38,12 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     private lateinit var llWrapper:LinearLayout
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapView: MapView
+
+
+    private var routesInfo:RoutesInfo?=null
+
+
+    private var index = 0
 
     private val TAG = "navigation"
 
@@ -67,6 +78,21 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
             navigationUIController?.showNaviBottomVisible(false)
             llWrapper.visibility = View.GONE
         }
+        //手动切换
+        btn_change_navi.setOnClickListener {
+            var max = 0
+            if (routesInfo != null){
+                max = routesInfo?.getRoutesInfo()?.size?:0
+            }
+            if (max > 0){
+                index++
+                if (index >= max){
+                    index = 0
+                }
+            }
+            mapboxMap.navigationControl.changeRouteSelectIndex(index)
+        }
+
 
         finishNavi.setOnClickListener {
             //真实导航
@@ -110,13 +136,37 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
                     }
                 })
+
+
+
+                initNaviConfig()
+
+//                mapboxMap.setC
             }
         }
     }
 
+    private fun initNaviConfig() {
+
+        mapboxMap.navigationControl?.setRouteSelectWidth(ScreenUtil.dp2px(3).toFloat())
+
+        mapboxMap?.navigationControl?.setRouteNoSelectColor(
+            ContextCompat.getColor(
+                this,
+                R.color.commonview_green_bcecca
+            )
+        )
+        mapboxMap?.navigationControl?.setRouteSelectColor(
+            ContextCompat.getColor(
+                this,
+                R.color.commonview_green_5AC776
+            )
+        )
+    }
+
     //导航结束
     override fun naviEnd(p0: Double, p1: Double) {
-        navigationUIController!!.hideNaviView()
+        navigationUIController?.hideNaviView()
         ThreadUtils.runMain {
             llWrapper.visibility = View.VISIBLE
         }
@@ -130,10 +180,16 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     //路线规划结果
     override fun routePlan(p0: Boolean) {
         mapboxMap.navigationControl.hideLocationIcon()
+        var drawable = ContextCompat.getDrawable(this, R.mipmap.biz_ic_start_point)
+        var enddrawable = ContextCompat.getDrawable(this, R.mipmap.ic_map_car)
+        mapboxMap.navigationControl?.setStartRouteIcon(BitmapUtils.getBitmapFromDrawable(drawable))
+        mapboxMap.navigationControl?.setEndRouteIcon(BitmapUtils.getBitmapFromDrawable(enddrawable))
+
     }
 
     //路线规划信息，时间 距离 红黄灯等
     override fun routePlanInfo(p0: RoutesInfo?) {
+        routesInfo = p0
         p0?.let {
             Log.i(TAG, " ")
             Log.i(TAG, "共${p0.routesInfo.size}条路线,信息如下: \n" + ParseUtils.covertRouteResult(it) )
