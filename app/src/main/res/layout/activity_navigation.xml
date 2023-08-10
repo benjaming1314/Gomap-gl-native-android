@@ -22,29 +22,35 @@
             android:id="@+id/btn_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="route planning" />
+            android:text="@string/route_planning" />
+
+        <Button
+            android:id="@+id/btn_route_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/route_planning_more" />
 
         <Button
             android:id="@+id/btn_route_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="route cancel" />
+            android:text="@string/route_cancel" />
         <Button
             android:id="@+id/btn_start_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="start navigation" />
+            android:text="@string/start_navigation" />
 
         <Button
             android:id="@+id/btn_finish_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="finish navigation" />
+            android:text="@string/finish_navigation" />
         <Button
             android:id="@+id/btn_change_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="change route" />
+            android:text="@string/change_route" />
 
 
     </LinearLayout>

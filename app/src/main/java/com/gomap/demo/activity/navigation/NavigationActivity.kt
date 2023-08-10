@@ -2,6 +2,7 @@ package com.gomap.demo.activity.navigation
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -23,7 +24,6 @@ import com.gomap.sdk.navigation.FrameWorkApiProxy
 import com.gomap.sdk.navigation.NavigationControl
 import com.gomap.sdk.navigation.bean.*
 import com.gomap.sdk.utils.BitmapUtils
-import com.gomap.sdk.utils.ScreenUtils
 import com.gomap.sdk.utils.ThreadUtils
 import kotlinx.android.synthetic.main.activity_navigation.*
 
@@ -93,6 +93,10 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
             mapboxMap.navigationControl.changeRouteSelectIndex(index)
         }
 
+        btn_route_more.setOnClickListener {
+            mapboxMap.navigationControl.startRoutePlanningByCar(TestData.getMore())
+
+        }
 
         finishNavi.setOnClickListener {
             //真实导航
@@ -143,7 +147,6 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
                 initNaviConfig()
 
-//                mapboxMap.setC
             }
         }
     }
@@ -281,6 +284,20 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
         if (cur != 0L && old != 0L && cur != old) {
             FrameWorkApiProxy.setMap(old)
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        finish()
     }
 
 }
