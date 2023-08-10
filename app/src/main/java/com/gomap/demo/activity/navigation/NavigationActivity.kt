@@ -137,7 +137,9 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                     }
                 })
 
-
+                mapboxMap.navigationControl.setRouteClickListener {
+                    mapboxMap.navigationControl.changeRouteSelectIndex(it)
+                }
 
                 initNaviConfig()
 
