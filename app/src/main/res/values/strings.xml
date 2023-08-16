@@ -102,6 +102,7 @@
     <string name="user_location_button_enabled">User location button enabled</string>
     <string name="user_location_button_disabled">User location button disabled</string>
     <string name="route_planning">route planning</string>
+    <string name="route_planning_avoid">route planning(avoid)</string>
     <string name="route_cancel">route cancel</string>
     <string name="start_navigation">start navigation</string>
     <string name="finish_navigation">finish navigation</string>

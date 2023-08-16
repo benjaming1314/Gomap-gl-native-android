@@ -22,7 +22,14 @@
             android:id="@+id/btn_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="@string/route_planning" />
+
+        <Button
+            android:id="@+id/btn_route_avoid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/route_planning_avoid" />
 
         <Button
             android:id="@+id/btn_route_more"

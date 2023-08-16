@@ -1,6 +1,7 @@
 package com.gomap.demo.activity.navigation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -13,11 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.gomap.demo.R
-import com.gomap.demo.activity.location.LocationFragmentActivity
 import com.gomap.demo.activity.navigation.parse.ParseUtils
-import com.gomap.demo.utils.ScreenUtil
 import com.gomap.maps.navigation.NavigationUIController
 import com.gomap.maps.navigation.listener.OnNavListener
 import com.gomap.maps.navigation.model.NavigationResult
@@ -36,6 +36,7 @@ import com.gomap.sdk.location.permissions.PermissionsManager
 import com.gomap.sdk.maps.MapView
 import com.gomap.sdk.maps.MapboxMap
 import com.gomap.sdk.maps.Style
+import com.gomap.sdk.maps.Style.OnStyleLoaded
 import com.gomap.sdk.navigation.FrameWorkApiProxy
 import com.gomap.sdk.navigation.NavigationControl
 import com.gomap.sdk.navigation.bean.*
@@ -45,18 +46,18 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndListener,
     NavigationControl.ReRoutePlanListener, NavigationControl.RoutePlanListener,
-    NavigationControl.ShowGuideInfoListener,LocationEngineCallback<LocationEngineResult>  {
+    NavigationControl.ShowGuideInfoListener, LocationEngineCallback<LocationEngineResult> {
 
     private lateinit var startRoutePlanning: Button
     private lateinit var cancelRoutePlanning: Button
     private lateinit var startNavi: Button
     private lateinit var finishNavi: Button
-    private lateinit var llWrapper:LinearLayout
+    private lateinit var llWrapper: LinearLayout
     private lateinit var mapboxMap: MapboxMap
     private lateinit var mapView: MapView
 
 
-    private var routesInfo:RoutesInfo?=null
+    private var routesInfo: RoutesInfo? = null
 
 
     private var index = 0
@@ -74,7 +75,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
         } else {
-          var permissionsManager = PermissionsManager(object : PermissionsListener {
+            var permissionsManager = PermissionsManager(object : PermissionsListener {
                 override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
                     Toast.makeText(
                         this@NavigationActivity,
@@ -119,16 +120,75 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
         //手动切换
         btn_change_navi.setOnClickListener {
             var max = 0
-            if (routesInfo != null){
-                max = routesInfo?.getRoutesInfo()?.size?:0
+            if (routesInfo != null) {
+                max = routesInfo?.getRoutesInfo()?.size ?: 0
             }
-            if (max > 0){
+            if (max > 0) {
                 index++
-                if (index >= max){
+                if (index >= max) {
                     index = 0
                 }
             }
             mapboxMap.navigationControl.changeRouteSelectIndex(index)
+        }
+
+        btn_route_avoid.setOnClickListener {
+            var avoidLocations = AvoidLocations().apply {
+                type = AvoidLocations.AvoidLocationsType.CIRCLE.type
+
+                var avoidLocationList = ArrayList<LatLng>()
+                var avoidRadiuses = ArrayList<Long>()
+                avoidLocationList.add(LatLng()
+                    .apply
+                    {
+                        latitude = 24.480464
+                        longitude = 54.38684
+                    })
+
+                avoidRadiuses.add(300L)
+                avoidLocations = avoidLocationList
+
+                this.avoidRadiuses = avoidRadiuses
+            }
+
+
+
+//test
+//            var avoidLocations = AvoidLocations().apply {
+//                type = AvoidLocations.AvoidLocationsType.CIRCLE.type
+//
+//                var avoidLocationList = ArrayList<LatLng>()
+//                var avoidRadiuses = ArrayList<Long>()
+//                for (i in 0 until 10){
+//                    avoidRadiuses.add(3L + i)
+//                    avoidLocationList.add(LatLng()
+//                        .apply
+//                     {
+//                         latitude = 24.3443 + i
+//                         longitude = 54.13232 + i
+//                     })
+//                }
+//                avoidLocations = avoidLocationList
+//
+//                var excludePolygons = ArrayList<Polygon>()
+//
+//                for (i in 0 until 10){
+//                   var pointList  =  ArrayList<Point>()
+//                    for (i in 0 until 20){
+//                        var point  = Point.fromLngLat(54.13232 + i,24.3443 + i)
+//                        pointList.add(point)
+//                    }
+//                    excludePolygons.add(Polygon.fromLngLats(
+//                        ArrayList<List<Point>>().apply {
+//                            add(pointList)
+//                        }
+//                    ))
+//                }
+//                this.avoidRadiuses = avoidRadiuses
+//                this.excludePolygons = excludePolygons
+//            }
+
+            mapboxMap.navigationControl.startRoutePlanningByCar(TestData.get(), avoidLocations)
         }
 
         btn_route_more.setOnClickListener {
@@ -191,7 +251,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
         }
     }
 
-    private fun activateLocationComponent(style:Style) {
+    private fun activateLocationComponent(style: Style) {
         //初始化定位组件
         val component = mapboxMap.locationComponent
 
@@ -218,7 +278,8 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                     LocationEngineRequest.Builder(750)
                         .setFastestInterval(750)
                         .setPriority(LocationEngineRequest.PRIORITY_HIGH_ACCURACY)
-                        .build())
+                        .build()
+                )
                 .build()
         )
 
@@ -243,8 +304,8 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     }
 
     override fun onSuccess(result: LocationEngineResult?) {
-        if (result != null){
-            ToastUtils.showShort("lat:"+result.lastLocation?.latitude?.toString() + " lon:" + result.lastLocation?.longitude)
+        if (result != null) {
+            ToastUtils.showShort("lat:" + result.lastLocation?.latitude?.toString() + " lon:" + result.lastLocation?.longitude)
         }
     }
 
@@ -253,9 +314,9 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
     private fun initNaviConfig() {
 
-        mapboxMap.navigationControl?.setRouteSelectWidth(ScreenUtil.dp2px(3).toFloat())
+        mapboxMap.navigationControl?.setRouteSelectWidth(SizeUtils.dp2px(3f).toFloat())
 
-        mapboxMap?.navigationControl?.setRouteNoSelectColor(
+        mapboxMap.navigationControl?.setRouteNoSelectColor(
             ContextCompat.getColor(
                 this,
                 R.color.commonview_green_bcecca
@@ -267,6 +328,12 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                 R.color.commonview_green_5AC776
             )
         )
+
+        var drawable = ContextCompat.getDrawable(this, R.drawable.biz_ic_start_point)
+        var enddrawable = ContextCompat.getDrawable(this, R.drawable.ic_map_car)
+        mapboxMap.navigationControl?.setStartRouteIcon(BitmapUtils.getBitmapFromDrawable(drawable))
+        mapboxMap.navigationControl?.setEndRouteIcon(BitmapUtils.getBitmapFromDrawable(enddrawable))
+
     }
 
     //导航结束
@@ -284,20 +351,18 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
 
     //路线规划结果
     override fun routePlan(p0: Boolean) {
+        mapboxMap.locationComponent.hideLocationLayer()
         mapboxMap.navigationControl.hideLocationIcon()
-        var drawable = ContextCompat.getDrawable(this, R.mipmap.biz_ic_start_point)
-        var enddrawable = ContextCompat.getDrawable(this, R.mipmap.ic_map_car)
-        mapboxMap.navigationControl?.setStartRouteIcon(BitmapUtils.getBitmapFromDrawable(drawable))
-        mapboxMap.navigationControl?.setEndRouteIcon(BitmapUtils.getBitmapFromDrawable(enddrawable))
 
     }
 
     //路线规划信息，时间 距离 红黄灯等
+    @SuppressLint("LogNotTimber")
     override fun routePlanInfo(p0: RoutesInfo?) {
         routesInfo = p0
         p0?.let {
             Log.i(TAG, " ")
-            Log.i(TAG, "共${p0.routesInfo.size}条路线,信息如下: \n" + ParseUtils.covertRouteResult(it) )
+            Log.i(TAG, "共${p0.routesInfo.size}条路线,信息如下: \n" + ParseUtils.covertRouteResult(it))
         }
     }
 
@@ -378,7 +443,7 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
      * 由于底层对map对象操作时，只保留一个map对象
      * 所以当主界面是地图界面时，导航结束返回主界面要重设map对象
      */
-   private fun resetMap() {
+    private fun resetMap() {
         val cur = FrameWorkApiProxy.getCurPtr()
         val old = FrameWorkApiProxy.getOldPtr()
         if (cur != 0L && old != 0L && cur != old) {
