@@ -242,6 +242,9 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
                 mapboxMap.navigationControl.setRouteClickListener {
                     mapboxMap.navigationControl.changeRouteSelectIndex(it)
                 }
+                mapboxMap.navigationControl.setCameraClickListener {
+                    ToastUtils.showShort("Camera:"+it.latitude +" " +it.longitude)
+                }
 
                 initNaviConfig()
                 activateLocationComponent(it)
