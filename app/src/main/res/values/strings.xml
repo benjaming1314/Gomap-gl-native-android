@@ -53,6 +53,7 @@
 
     <string name="navigation">Navigation</string>
     <string name="navigation_demo">Navigation Demo</string>
+    <string name="description_along_the_way">Along the way demo</string>
 
     <string name="description_camera_animation_types">Showcase the different animation types</string>
     <string name="description_polyline">Add a polyline to a map</string>
@@ -108,5 +109,8 @@
     <string name="finish_navigation">finish navigation</string>
     <string name="change_route">change route</string>
     <string name="route_planning_more">route planning more</string>
+    <string name="search_restaurant_along_the_way">Search restaurant along the way</string>
+    <string name="search_shop_along_the_way">Search shop along the way</string>
+    <string name="search_mall_along_the_way">Search mall along the way</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.gomap.demo;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -8,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +24,10 @@ import com.gomap.demo.adapter.FeatureSectionAdapter;
 import com.gomap.demo.model.Feature;
 import com.gomap.demo.utils.ItemClickSupport;
 import com.gomap.demo.utils.PreferenceStorageUtils;
+import com.gomap.plugin.api.GomapAccessToken;
 import com.gomap.plugin.api.GomapApiKey;
+import com.gomap.plugin.api.model.AccessTokenModel;
+import com.gomap.plugin.api.model.AccessTokenReq;
 import com.gomap.plugin.api.model.ApiKeyInfo;
 import com.gomap.plugin.api.model.HttpResponse;
 import com.gomap.sdk.log.Logger;
@@ -80,6 +85,7 @@ public class FeatureOverviewActivity extends AppCompatActivity {
     }
 
     loadApikey();
+    loadAccessToken();
   }
 
 
@@ -105,6 +111,31 @@ public class FeatureOverviewActivity extends AppCompatActivity {
               }
             });
 
+  }
+
+  private void loadAccessToken() {
+    GomapAccessToken.builder()
+            .accessTokenReq(new AccessTokenReq("client_credentials",
+                    "oauth2-demo-client-id-android",
+                    "oauth2-demo-client-secret-android",
+                    "read write"))
+            .build()
+            .enqueueCall(new Callback<AccessTokenModel>() {
+              @SuppressLint("LogNotTimber")
+              @Override
+              public void onResponse(Call<AccessTokenModel> call, Response<AccessTokenModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                  PreferenceStorageUtils.INSTANCE.saveAccessToken(response.body().toJson());
+                  Log.i(KEY_STATE_FEATURES, "json: " + response.body().toJson());
+                }
+              }
+
+              @SuppressLint("LogNotTimber")
+              @Override
+              public void onFailure(Call<AccessTokenModel> call, Throwable t) {
+                Log.i(KEY_STATE_FEATURES, "access token call failed: " + t.getMessage());
+              }
+            });
   }
 
   private void loadFeatures() {
