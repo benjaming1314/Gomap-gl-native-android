@@ -108,6 +108,19 @@
                 android:value=".FeatureOverviewActivity" />
         </activity>
         <activity
+            android:name=".activity.camera.LatLngBoundsActivity"
+            android:description="@string/description_visible_bounds"
+            android:exported="true"
+            android:label="@string/activity_visible_coordinate_bounds"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="@string/category"
+                android:value="@string/category_camera" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeatureOverviewActivity" />
+        </activity>
+        <activity
             android:name=".activity.location.LocationFragmentActivity"
             android:description="@string/description_location_fragment"
             android:exported="true"

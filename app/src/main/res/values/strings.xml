@@ -113,4 +113,7 @@
     <string name="search_shop_along_the_way">Search shop along the way</string>
     <string name="search_mall_along_the_way">Search mall along the way</string>
 
+    <string name="description_visible_bounds">Center the camera around a bounds</string>
+    <string name="activity_visible_coordinate_bounds">LatLngBounds Method</string>
+
 </resources>
