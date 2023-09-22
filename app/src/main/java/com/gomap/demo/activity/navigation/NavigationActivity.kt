@@ -465,6 +465,9 @@ class NavigationActivity : AppCompatActivity(), NavigationControl.NavigationEndL
     }
 
     override fun onBackPressed() {
+        if(mapboxMap.navigationControl.isOnNavigation) {
+            mapboxMap.navigationControl.finishSimulationNavigation()
+        }
         finish()
     }
 
