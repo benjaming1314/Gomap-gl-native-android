@@ -1,12 +1,13 @@
 package com.gomap.demo.activity.camera
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.gomap.demo.R
+import com.gomap.demo.activity.style.SymbolLayerActivity
 import com.gomap.demo.utils.Utils.loadStringFromAssets
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.gomap.geojson.FeatureCollection
 import com.gomap.geojson.FeatureCollection.fromJson
 import com.gomap.geojson.Point
@@ -14,11 +15,16 @@ import com.gomap.sdk.geometry.LatLng
 import com.gomap.sdk.geometry.LatLngBounds
 import com.gomap.sdk.maps.MapboxMap
 import com.gomap.sdk.maps.Style
-import com.gomap.sdk.style.layers.Property.ICON_ANCHOR_CENTER
+import com.gomap.sdk.style.expressions.Expression
+import com.gomap.sdk.style.expressions.Expression.FormatOption
+import com.gomap.sdk.style.layers.Property
+import com.gomap.sdk.style.layers.Property.*
 import com.gomap.sdk.style.layers.PropertyFactory.*
 import com.gomap.sdk.style.layers.SymbolLayer
 import com.gomap.sdk.style.sources.GeoJsonSource
 import com.gomap.sdk.utils.BitmapUtils
+import com.gomap.sdk.utils.FontUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_latlngbounds.*
 import java.net.URISyntaxException
 
@@ -26,6 +32,12 @@ import java.net.URISyntaxException
  * Test activity showcasing using the LatLngBounds camera API.
  */
 class LatLngBoundsActivity : AppCompatActivity() {
+
+    private val SELECTED_FEATURE_PROPERTY = "selected"
+    private val TITLE_FEATURE_PROPERTY = "title"
+
+    private val ITALIC_FONT_STACK = FontUtils.ITALIC_FONT_STACK
+    private val NORMAL_FONT_STACK = FontUtils.NORMAL_FONT_STACK
 
     private lateinit var mapboxMap: MapboxMap
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
@@ -72,10 +84,14 @@ class LatLngBoundsActivity : AppCompatActivity() {
                 .withLayer(
                     SymbolLayer("symbol", "symbol")
                         .withProperties(
-                            iconAllowOverlap(true),
-                            iconIgnorePlacement(true),
+                            iconAllowOverlap(false),
+                            textAllowOverlap(false),
                             iconImage("icon"),
-                            iconAnchor(ICON_ANCHOR_CENTER)
+                            textField("abc"),
+                            textFont(NORMAL_FONT_STACK),
+                            textColor(Color.BLUE),
+                            textAnchor(TEXT_ANCHOR_LEFT),
+                            iconAnchor(ICON_ANCHOR_RIGHT)
                         )
                 )
                 .withSource(GeoJsonSource("symbol", featureCollection))
