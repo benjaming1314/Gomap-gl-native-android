@@ -187,14 +187,14 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
                         iconIgnorePlacement(true),
                         iconAllowOverlap(true),
                         iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
-                        iconAnchor(Property.ICON_ANCHOR_BOTTOM),
+                        iconAnchor(Property.ICON_ANCHOR_RIGHT),
                         iconColor(Color.BLUE),
                         textField(TEXT_FIELD_EXPRESSION),
                         textFont(NORMAL_FONT_STACK),
                         textColor(Color.BLUE),
                         textAllowOverlap(true),
                         textIgnorePlacement(true),
-                        textAnchor(Property.TEXT_ANCHOR_TOP),
+                        textAnchor(Property.TEXT_ANCHOR_LEFT),
                         textSize(10f)
                 );
 
