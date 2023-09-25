@@ -14,15 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gomap.android.gestures.AndroidGesturesManager;
 import com.gomap.demo.R;
-import com.gomap.geojson.LineString;
 import com.gomap.sdk.annotation.OnSymbolClickListener;
 import com.gomap.sdk.annotation.Symbol;
 import com.gomap.sdk.annotation.SymbolManager;
 import com.gomap.sdk.annotation.SymbolOptions;
 import com.gomap.sdk.maps.UiSettings;
-import com.gomap.sdk.style.layers.Layer;
-import com.gomap.sdk.style.layers.LineLayer;
-import com.gomap.sdk.style.layers.PropertyFactory;
 import com.gomap.sdk.utils.FontUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -43,7 +39,6 @@ import com.gomap.sdk.style.sources.GeoJsonSource;
 import com.gomap.sdk.style.sources.Source;
 import com.gomap.sdk.utils.BitmapUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -96,7 +91,7 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
     private static final String TITLE_FEATURE_PROPERTY = "title";
 
     private static final String[] ITALIC_FONT_STACK = FontUtils.ITALIC_FONT_STACK;
-    private static final String[] NORMAL_FONT_STACK = FontUtils.NORMAL_FONT_STACK;
+    private static final String[] NORMAL_FONT_STACK= FontUtils.NORMAL_FONT_STACK;
 
     // layer & source constants
     private static final String MARKER_SOURCE = "marker-source";
@@ -135,7 +130,6 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
     private SymbolLayer numberFormatSymbolLayer;
     private MapboxMap mapboxMap;
     private MapView mapView;
-    private static final String ID_ICON_AIRPORT = "airport";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -161,7 +155,7 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
             Style style = mapboxMap.getStyle();
             if (style != null) {
                 Timber.e("Adding image with id: %s", id);
-                Bitmap androidIcon = BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.mipmap.ic_launcher));
+                Bitmap androidIcon = BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.drawable.ic_android_2));
                 style.addImage(id, Objects.requireNonNull(androidIcon));
             }
         });
@@ -184,17 +178,15 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
         markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
                 .withProperties(
                         iconImage(get(TITLE_FEATURE_PROPERTY)),
-                        iconIgnorePlacement(true),
-                        iconAllowOverlap(true),
+                        iconAllowOverlap(false),
                         iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
-                        iconAnchor(Property.ICON_ANCHOR_RIGHT),
+                        iconAnchor(Property.ICON_ANCHOR_BOTTOM),
                         iconColor(Color.BLUE),
                         textField(TEXT_FIELD_EXPRESSION),
                         textFont(NORMAL_FONT_STACK),
                         textColor(Color.BLUE),
-                        textAllowOverlap(true),
-                        textIgnorePlacement(true),
-                        textAnchor(Property.TEXT_ANCHOR_LEFT),
+                        textAllowOverlap(false),
+                        textAnchor(Property.TEXT_ANCHOR_TOP),
                         textSize(10f)
                 );
 
@@ -242,60 +234,6 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
 
         // Set a click-listener so we can manipulate the map
         mapboxMap.addOnMapClickListener(SymbolLayerActivity.this);
-
-        mapboxMap.getBaseStyle(new Style.OnStyleLoaded() {
-            @Override
-            public void onStyleLoaded(@NonNull Style style) {
-                addLine(style);
-            }
-        });
-
-    }
-
-
-    private void addLine(Style style) {
-
-        SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
-        symbolManager.setIconAllowOverlap(true);
-        symbolManager.setTextAllowOverlap(true);
-
-        ArrayList list = new ArrayList<Point>();
-        list.add(Point.fromLngLat(54.3167, 24.4128));
-        list.add(Point.fromLngLat(54.3267, 24.4228));
-        list.add(Point.fromLngLat(54.3367, 24.4328));
-        list.add(Point.fromLngLat(54.3467, 24.4428));
-        list.add(Point.fromLngLat(54.3567, 24.4528));
-        list.add(Point.fromLngLat(54.3667, 24.4628));
-        list.add(Point.fromLngLat(54.3767, 24.4728));
-        list.add(Point.fromLngLat(54.3867, 24.4828));
-
-        String layerId = "line-layer-test";
-        String sourceId = "line-source-test";
-        style.addSource(
-                new GeoJsonSource(
-                        sourceId, Feature.fromGeometry(LineString.fromLngLats(list))
-                )
-        );
-        Layer layer = new LineLayer(layerId, sourceId);
-        layer.setProperties(PropertyFactory.lineColor(Color.BLUE));
-        layer.setProperties(PropertyFactory.lineCap(Property.LINE_CAP_ROUND));
-        layer.setProperties(PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND));
-        layer.setProperties(PropertyFactory.lineWidth(5f));
-
-        style.addLayerBelow(layer,symbolManager.getLayerId());
-
-        style.addImage(ID_ICON_AIRPORT,
-                BitmapUtils.getBitmapFromDrawable(getResources().getDrawable(R.drawable.ic_airplanemode_active_black_24dp)),
-                true);
-        // create a symbol
-        SymbolOptions symbolOptions = new SymbolOptions()
-                .withLatLng(new LatLng(24.4628, 54.3667))
-                .withIconImage(ID_ICON_AIRPORT)
-                .withIconSize(1.3f)
-                .withSymbolSortKey(10f)
-                .withDraggable(true);
-        Symbol symbol = symbolManager.create(symbolOptions);
-        Timber.e(symbol.toString());
     }
 
     @Override
