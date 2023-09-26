@@ -52,6 +52,7 @@ import static com.gomap.sdk.style.expressions.Expression.FormatOption.formatText
 import static com.gomap.sdk.style.expressions.Expression.NumberFormatOption.currency;
 import static com.gomap.sdk.style.expressions.Expression.NumberFormatOption.locale;
 import static com.gomap.sdk.style.expressions.Expression.concat;
+import static com.gomap.sdk.style.expressions.Expression.eq;
 import static com.gomap.sdk.style.expressions.Expression.format;
 import static com.gomap.sdk.style.expressions.Expression.formatEntry;
 import static com.gomap.sdk.style.expressions.Expression.get;
@@ -174,6 +175,9 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
         });
         markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
 
+        Expression expression = eq(get(TITLE_FEATURE_PROPERTY), "Android");
+        markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
+
         // marker layer
         markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
                 .withProperties(
@@ -189,6 +193,8 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
                         textAnchor(Property.TEXT_ANCHOR_TOP),
                         textSize(10f)
                 );
+
+        markerSymbolLayer.setFilter(expression);
 
         // mapbox sign layer
         Source mapboxSignSource = new GeoJsonSource(MAPBOX_SIGN_SOURCE, Point.fromLngLat(54.3597, 24.4628));
