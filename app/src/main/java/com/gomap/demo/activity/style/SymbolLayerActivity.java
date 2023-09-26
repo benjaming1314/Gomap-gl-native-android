@@ -177,7 +177,7 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
         // marker layer
         markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
                 .withProperties(
-                        iconImage(get(TITLE_FEATURE_PROPERTY)),
+                        iconImage("police_station_s"),
                         iconAllowOverlap(false),
                         iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
                         iconAnchor(Property.ICON_ANCHOR_BOTTOM),
@@ -192,7 +192,19 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
 
         // mapbox sign layer
         Source mapboxSignSource = new GeoJsonSource(MAPBOX_SIGN_SOURCE, Point.fromLngLat(54.3597, 24.4628));
-        mapboxSignSymbolLayer = new SymbolLayer(MAPBOX_SIGN_LAYER, MAPBOX_SIGN_SOURCE);
+        mapboxSignSymbolLayer = new SymbolLayer(MAPBOX_SIGN_LAYER, MAPBOX_SIGN_SOURCE).withProperties(
+                iconImage("hospital_or_polyclinic_s"),
+                iconAllowOverlap(false),
+                iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
+                iconAnchor(Property.ICON_ANCHOR_BOTTOM),
+                iconColor(Color.BLUE),
+                textField(TEXT_FIELD_EXPRESSION),
+                textFont(NORMAL_FONT_STACK),
+                textColor(Color.BLUE),
+                textAllowOverlap(false),
+                textAnchor(Property.TEXT_ANCHOR_TOP),
+                textSize(10f)
+        );
         shuffleMapboxSign();
 
         // number format layer
