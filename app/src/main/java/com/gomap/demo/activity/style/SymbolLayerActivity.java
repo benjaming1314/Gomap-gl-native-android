@@ -175,9 +175,6 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
         });
         markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
 
-        Expression expression = eq(get(TITLE_FEATURE_PROPERTY), "Android");
-        markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
-
         // marker layer
         markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
                 .withProperties(
@@ -194,12 +191,15 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
                         textSize(10f)
                 );
 
+        // Setup a filter to filter out the title(feature property) is not Android
+        Expression expression = eq(get(TITLE_FEATURE_PROPERTY), "Android");
+        markerSource = new GeoJsonSource(MARKER_SOURCE, markerCollection);
         markerSymbolLayer.setFilter(expression);
 
         // mapbox sign layer
         Source mapboxSignSource = new GeoJsonSource(MAPBOX_SIGN_SOURCE, Point.fromLngLat(54.3597, 24.4628));
         mapboxSignSymbolLayer = new SymbolLayer(MAPBOX_SIGN_LAYER, MAPBOX_SIGN_SOURCE).withProperties(
-                iconImage("hospital_or_polyclinic_s"),
+                iconImage(get(TITLE_FEATURE_PROPERTY)),
                 iconAllowOverlap(false),
                 iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
                 iconAnchor(Property.ICON_ANCHOR_BOTTOM),
