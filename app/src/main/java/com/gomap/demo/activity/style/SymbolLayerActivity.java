@@ -69,6 +69,7 @@ import static com.gomap.sdk.style.layers.PropertyFactory.iconColor;
 import static com.gomap.sdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.gomap.sdk.style.layers.PropertyFactory.iconImage;
 import static com.gomap.sdk.style.layers.PropertyFactory.iconOpacity;
+import static com.gomap.sdk.style.layers.PropertyFactory.iconOptional;
 import static com.gomap.sdk.style.layers.PropertyFactory.iconSize;
 import static com.gomap.sdk.style.layers.PropertyFactory.textAllowOverlap;
 import static com.gomap.sdk.style.layers.PropertyFactory.textAnchor;
@@ -76,6 +77,7 @@ import static com.gomap.sdk.style.layers.PropertyFactory.textColor;
 import static com.gomap.sdk.style.layers.PropertyFactory.textField;
 import static com.gomap.sdk.style.layers.PropertyFactory.textFont;
 import static com.gomap.sdk.style.layers.PropertyFactory.textIgnorePlacement;
+import static com.gomap.sdk.style.layers.PropertyFactory.textOptional;
 import static com.gomap.sdk.style.layers.PropertyFactory.textRotationAlignment;
 import static com.gomap.sdk.style.layers.PropertyFactory.textSize;
 
@@ -179,13 +181,17 @@ public class SymbolLayerActivity extends AppCompatActivity implements MapboxMap.
         markerSymbolLayer = new SymbolLayer(MARKER_LAYER, MARKER_SOURCE)
                 .withProperties(
                         iconImage("police_station_s"),
-                        iconAllowOverlap(false),
+                        //If true, the icon will be visible even if it collides with other previously drawn symbols.
+                        iconAllowOverlap(true),
+                        //If true, icons will display without their corresponding text when the text collides with other symbols and the icon does not.
+                        textOptional(true),
                         iconSize(switchCase(toBool(get(SELECTED_FEATURE_PROPERTY)), literal(1.5f), literal(1.0f))),
                         iconAnchor(Property.ICON_ANCHOR_BOTTOM),
                         iconColor(Color.BLUE),
                         textField(TEXT_FIELD_EXPRESSION),
                         textFont(NORMAL_FONT_STACK),
                         textColor(Color.BLUE),
+                        //If true, the text will be visible even if it collides with other previously drawn symbols.
                         textAllowOverlap(false),
                         textAnchor(Property.TEXT_ANCHOR_TOP),
                         textSize(10f)
