@@ -116,4 +116,8 @@
     <string name="description_visible_bounds">Center the camera around a bounds</string>
     <string name="activity_visible_coordinate_bounds">LatLngBounds Method</string>
 
+    <string name="description_recyclerview_glsurfaceview">Show multiple GLSurfaceView MapViews as recyclerView items</string>
+    <string name="activity_recyclerview_glsurfaceview">RecyclerView GLSurfaceView</string>
+    <string name="category_integration">_Integration</string>
+
 </resources>
